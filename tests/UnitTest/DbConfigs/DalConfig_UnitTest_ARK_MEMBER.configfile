@@ -1,0 +1,43 @@
+﻿<?xml version="1.0"?>
+<dalConfig>
+  <databaseSet databaseName="sys_db" provider="mysql" connectionStringName="foundation.aws.mysql.connectionstring.sys_db">
+    <dataCommand name="Unittest:show:version:sys_db" commandType="Text" commandTimeOut="5">
+      <commandText>
+        <![CDATA[
+SELECT VERSION();
+        ]]>
+      </commandText>
+    </dataCommand>
+    <dataCommand name="Unittest:show:databases:sys_db" commandType="Text" commandTimeOut="5">
+      <commandText>
+        <![CDATA[
+SHOW DATABASES;
+        ]]>
+      </commandText>
+    </dataCommand>
+    <dataCommand name="Unittest:show:tables:sys_db" commandType="Text" commandTimeOut="5">
+      <commandText>
+        <![CDATA[
+SHOW TABLES;
+        ]]>
+      </commandText>
+    </dataCommand>
+    <dataCommand name="Unittest:show:schema:by:table:sys_db" commandType="Text" commandTimeOut="5">
+      <commandText>
+        <![CDATA[
+SELECT COLUMN_NAME,
+  COLUMN_DEFAULT,
+  IS_NULLABLE,
+  DATA_TYPE,
+  COLUMN_TYPE,
+  COLUMN_KEY,
+  EXTRA
+FROM information_schema.columns
+WHERE table_schema = 'sys_db'
+  AND TABLE_NAME = @table_name
+;
+        ]]>
+      </commandText>
+    </dataCommand>
+  </databaseSet>
+</dalConfig>

@@ -1,0 +1,101 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <EnableDefaultContentItems>false</EnableDefaultContentItems>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <AWSProjectType>Lambda</AWSProjectType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningsAsErrors>NU1605</WarningsAsErrors>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <NoWarn>1701;1702;1705</NoWarn>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <WarningsAsErrors>NU1605</WarningsAsErrors>
+    <NoWarn>1701;1702;1705</NoWarn>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="log\**" />
+    <Content Remove="log\**" />
+    <EmbeddedResource Remove="log\**" />
+    <None Remove="log\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="aws-logger-errors.txt" />
+    <None Remove="Readme.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="conf\**" CopyToOutputDirectory="PreserveNewest" LinkBase="conf\" />
+    <None Include="DbConfigs\**" CopyToOutputDirectory="PreserveNewest" LinkBase="DbConfigs\" />
+    <None Include="App_Data\**" CopyToOutputDirectory="PreserveNewest" LinkBase="App_Data\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Nuget.Config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include=".version">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="favicon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="robots.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="platform.Staging_2.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="platform.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="platform.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="platform.Production.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="platform.Staging.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="web.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="serverless.Development.template;serverless.Production.template;">
+      <DependentUpon>serverless.template</DependentUpon>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" /> -->
+    <PackageReference Include="AWSSDK.Core" Version="3.7.400.71" />
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.301" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.410.13" />
+    <PackageReference Include="AWS.Logger.Log4net" Version="3.5.3" />
+    <PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="9.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\Abstractions\Nwpie.Foundation.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Hosting\ServiceStack\Nwpie.Foundation.Hosting.ServiceStack.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Measurement\SDK\Nwpie.Foundation.Measurement.SDK.csproj" />
+    <ProjectReference Include="..\..\..\..\src\MessageQueue\Factory\Nwpie.Foundation.MessageQueue.Factory.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Notification\Contract\Nwpie.Foundation.Notification.Contract.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Notification\SDK\Nwpie.Foundation.Notification.SDK.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Notification\Smtp\Nwpie.Foundation.Notification.Smtp.csproj" />
+    <ProjectReference Include="..\..\..\..\src\ServiceNode\HealthCheck\Nwpie.Foundation.ServiceNode.HealthCheck.csproj" />
+    <ProjectReference Include="..\..\..\..\src\ServiceNode\ServiceStack\Nwpie.Foundation.ServiceNode.ServiceStack.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,17 @@
+{
+  "foundation": {
+    "featureToggle": {
+      "prod.Production.mapping": false
+    },
+    "startupJsonFileList": {
+      "appsettings.json": false,
+      "conf/appsettings.Production.json": false
+    },
+    "cache": {
+      "defaultProvider": "LocalCache" // RedisCache, LocalCache
+    },
+    "apm": {
+      "influxDefaultDB": "foundation"
+    }
+  }
+}

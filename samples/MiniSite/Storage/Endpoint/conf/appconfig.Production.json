@@ -1,0 +1,17 @@
+﻿{
+  "env": "prod",
+  "app": {
+    "name": "storage",
+    "serviceMail": "system.account@kevinw.net",
+    "services": {
+      "autoDI": true,
+      "Storage": {
+        "host": "https://api.kevinw.net/storage",
+        "botNotifyGroupId": "fake_group_id",
+        "defaultBucketName": "svc-asset-api",
+        "defaultCacheProvider": "Redis",
+        "defaultAuthProvider": "JwtTokenService"
+      }
+    }
+  }
+}

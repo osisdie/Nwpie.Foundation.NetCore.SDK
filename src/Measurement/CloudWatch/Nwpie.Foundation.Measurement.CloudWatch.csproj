@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <PackageId>Nwpie.Foundation.Measurement.CloudWatch</PackageId>
+    <Authors>kevinwu</Authors>
+    <License>https://www.freebsd.org/copyright/freebsd-license.html</License>
+    <Description>AWS CloudWatch Logging</Description>
+    <PackageTags>Measurement;CloudWatch;AWS</PackageTags>
+    <PackageReleaseNotes>Reference Abstractions</PackageReleaseNotes>
+    <PackageIconUrl>https://cdn.vsassets.io/content/icons/favicon.ico</PackageIconUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <RepositoryType>git</RepositoryType>
+    <VersionPrefix>1.0.0.0</VersionPrefix>
+    <!--VersionSuffix>preview-0723-2</VersionSuffix-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.CloudWatch" Version="3.7.402.19" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Nwpie.Foundation.Common.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,16 @@
+﻿{
+  "foundation": {
+    "featureToggle": {
+      "preprod.Staging_2.mapping": false
+    },
+    "startupJsonFileList": {
+      "conf/appsettings.Staging_2.json": false
+    },
+    "cache": {
+      "defaultProvider": "LocalCache" // RedisCache, LocalCache
+    },
+    "apm": {
+      "influxDefaultDB": "foundation"
+    }
+  }
+}

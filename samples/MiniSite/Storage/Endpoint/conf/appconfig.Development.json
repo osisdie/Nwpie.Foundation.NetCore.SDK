@@ -1,0 +1,17 @@
+﻿{
+  "env": "dev",
+  "app": {
+    "name": "storage",
+    "serviceMail": "system.account.dev@kevinw.net",
+    "services": {
+      "autoDI": true,
+      "Storage": {
+        "host": "https://api-dev.kevinw.net/storage",
+        "botNotifyGroupId": "fake_group_id",
+        "defaultBucketName": "svc-asset-api-dev",
+        "defaultCacheProvider": "Redis", // LocalCache or Redis
+        "defaultAuthProvider": "JwtTokenService" // JwtTokenService or AesTokenService
+      }
+    }
+  }
+}

@@ -1,0 +1,84 @@
+﻿{
+  "foundation": {
+    "version": "1.0.0.1",
+    "remoteConfigKeys": [
+      "foundation.sdk.auth.default",
+      "foundation.sdk.auth.host_url.default",
+      "foundation.aws.redis.connectionstring.db0",
+      "foundation.aws.mysql.connectionstring.sys_db",
+      "foundation.aws.mysql.connectionstring.todo_db",
+      "foundation.aws.mysql.connectionstring.auth_db",
+      "foundation.aws.mysql.connectionstring.svc_ds1",
+      "foundation.aws.mysql.connectionstring.fruit_db",
+      "foundation.aws.sqs.urls.notification.default",
+      "foundation.aws.sqs.urls.measurement.default",
+      "foundation.aws.s3.credential.default",
+      "foundation.aws.s3.credential.todo_db",
+      "foundation.service.elasticsearch.host_url.default",
+      "foundation.service.notification.host_url.default"
+    ],
+    "featureToggle": {
+      "debug.undefine.mapping": false
+    },
+    "startupJsonFileList": {
+      "appsettings.json": false
+    },
+    "loc": {
+      "asConfigServerEnabled": true,
+      "serviceDiscoveryEnabled": false,
+      "serviceDiscoveryHostUrl": "http://127.0.0.1:8500",
+      "listenLocationEventEnabled": true,
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "localLoggingFile": ""
+    },
+    "api": {
+      "bearToken": "",
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "localLoggingFile": ""
+    },
+    "dal": {
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "localLoggingFile": ""
+    },
+    "auth": {
+      "defaultProvider": "JwtTokenService",
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "collectUsageMetricEnabled": true,
+      "localLoggingFile": ""
+    },
+    "cache": {
+      "defaultProvider": "LocalCache", // RedisCache, LocalCache
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "collectUsageMetricEnabled": true,
+      "localLoggingFile": ""
+    },
+    "mq": {
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "localLoggingFile": ""
+    },
+    "apm": {
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "maxMessageCount": 1000,
+      "sendFrequency": 1000,
+      "influxHostUri": "http://ec2-52-43-219-233.us-west-2.compute.amazonaws.com:8086",
+      "influxDbUser": "**",
+      "influxDbPwd": "**",
+      "influxDefaultDB": "foundation_temp",
+      "localLoggingFile": ""
+    },
+    "localCfg": {
+      "enabled": true,
+      "measurementEnabled": false,
+      "remoteLoggingEnabled": false,
+      "localLoggingFile": "",
+      "localConfigFilePath": "conf/localcfg.Development.json"
+    }
+  }
+}

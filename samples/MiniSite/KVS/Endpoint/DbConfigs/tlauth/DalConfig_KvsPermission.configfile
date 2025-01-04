@@ -1,0 +1,23 @@
+﻿<?xml version="1.0"?>
+<dalConfig>
+  <databaseSet databaseName="auth_db" provider="mysql" connectionStringName="foundation.aws.mysql.connectionstring.auth_db">
+    <dataCommand name="Kvs:Permission:Get" commandType="Text">
+      <commandText>
+        <![CDATA[
+SELECT VERSION();
+        ]]>
+      </commandText>
+      <parameters>
+      </parameters>
+    </dataCommand>
+    <dataCommand name="Kvs:Permission:Set" commandType="Text">
+      <commandText>
+        <![CDATA[
+SELECT VERSION();
+        ]]>
+      </commandText>
+      <parameters>
+      </parameters>
+    </dataCommand>
+  </databaseSet>
+</dalConfig>

@@ -1,0 +1,398 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/dotnet-core?view=azure-devops
+
+name: "Build S3Proxy && Deploy"
+trigger:
+  branches:
+    include:
+      - dev
+  paths:
+    include:
+      - samples/Serverless/S3Proxy/Endpoint/*
+    exclude:
+      - '**/App_Data/*'
+      - '**/DbConfigs/*'
+      - '**/swagger-ui/*'
+      - '**/*.sh'
+      - '**/*.json'
+      - '**/*.config'
+      - '**/*.configfile'
+      - '**/*.md'
+      - '**/*.yml'
+      - '**/*.yaml'
+      - '**/.editorconfig'
+      - '**/.csproj'
+      - '*.sln'
+      - '.gitignore'
+      - '.dockerignore'
+variables:
+  - group: library_var_group_dev
+  - group: library_var_group_preprod
+  - name: var_configuration
+    value: 'Release'
+  - name: var_healthcheck_enabled
+    value: true
+  - name: var_dotnet_build_enabled
+    value: true
+  - name: var_unittest_enabled
+    value: true
+  - name: var_version_check_enabled
+    value: true
+  - name: var_docker_push_enabled
+    value: true
+  - name: var_var_git_tagging_enabled
+    value: true
+  - name: var_eks_deploy_enabled
+    value: true
+  - name: var_pipe_to_preprod
+    value: false
+  - name: var_notification_enabled
+    value: false
+pool:
+  vmImage: 'ubuntu-22.04'
+steps:
+  - task: UseDotNet@2
+    condition: and(succeeded(), eq(variables['var_dotnet_build_enabled'], true))
+    displayName: Install .NET SDK
+    inputs:
+      packageType: 'sdk'
+      version: '8.x'
+      includePreviewVersions: false
+  - script: |
+      # do you want to healthcheck configserver endpoint ?
+      if [ -z $(AZURE_CONFIGSERVER_ECHO_URL) ]; then
+        echo "AZURE_CONFIGSERVER_ECHO_URL is unset"
+        echo "Skipping"
+      else
+        local_response=$(curl -X POST -H "Content-Type: application/json" -d '{"data":{"message":"123"}}' -s -o /dev/null -w '%{http_code}' $(AZURE_CONFIGSERVER_ECHO_URL))
+        echo "$local_response $(AZURE_CONFIGSERVER_ECHO_URL)"
+        if [ $local_response -gt 400 ]; then exit 1; fi
+      fi
+
+      # do you want to healthcheck application endpoint ?
+      if [ -z $(SVC_HEALTHCHECK_URL) ]; then
+        echo "SVC_HEALTHCHECK_URL is unset"
+        echo "Skipping"
+      else
+        local_response=$(curl -s -o /dev/null -w '%{http_code}' $(SVC_HEALTHCHECK_URL))
+        echo "$local_response $(SVC_HEALTHCHECK_URL)"
+        if [ $local_response -gt 400 ]; then exit 1; fi
+      fi
+    condition: and(succeeded(), eq(variables['var_healthcheck_enabled'], true))
+    displayName: '[Custom] Healthcheck API endpoint'
+  - script: |
+      if [ -z $(AZURE_NUGET_USERNAME) ]; then echo "AZURE_NUGET_USERNAME is unset" && exit 1; else echo "AZURE_NUGET_USERNAME is set to '$(AZURE_NUGET_USERNAME)'"; fi
+      if [ -z $(AZURE_NUGET_PAT) ]; then echo "AZURE_NUGET_PAT is unset" && exit 1; else echo "AZURE_NUGET_PAT is set to '$(AZURE_NUGET_PAT)'"; fi
+      if [ -z $(AZURE_NUGET_ENDPOINT) ]; then echo "AZURE_NUGET_ENDPOINT is unset" && exit 1; else echo "AZURE_NUGET_ENDPOINT is set to '$(AZURE_NUGET_ENDPOINT)'"; fi
+      cat azure-nuget.xml | sed "s|NUGET_ENDPOINT|$(AZURE_NUGET_ENDPOINT)|" | sed "s|NUGET_USERNAME|$(AZURE_NUGET_USERNAME)|" | sed "s|NUGET_PAT|$(AZURE_NUGET_PAT)|" > ./nuget.config
+      dotnet restore --configfile ./nuget.config
+    env:
+      SYSTEM_ACCESSTOKEN: $(AZURE_NUGET_PAT)
+    condition: and(succeeded(), eq(variables['var_dotnet_build_enabled'], true))
+    displayName: '[Custom] dotnet restore --configfile ./nuget.config'
+  - task: DotNetCoreCLI@2
+    condition: and(succeeded(), eq(variables['var_dotnet_build_enabled'], true))
+    displayName: '[Custom] dotnet build -c $(var_configuration)'
+    inputs:
+      command: build
+      arguments: '-c $(var_configuration)'
+  - task: DotNetCoreCLI@2
+    condition: and(succeeded(), eq(variables['var_unittest_enabled'], true))
+    displayName: '[Custom] dotnet test $(var_configuration)'
+    env:
+      AWS_ACCESS_KEY_ID: $(SVC_AWS_ACCESS_KEY_ID)
+      AWS_SECRET_ACCESS_KEY: $(SVC_AWS_SECRET_ACCESS_KEY)
+      ASPNETCORE_ENVIRONMENT: $(AZURE_ASPNETCORE_ENVIRONMENT)
+      SDK_API_NAME: $(SVC_SDK_API_NAME)
+      SDK_API_KEY: $(SVC_SDK_API_KEY)
+      SDK_API_TOKEN: $(SVC_SDK_API_TOKEN)
+      SDK_API_BASE_URL: $(AZURE_SDK_API_BASE_URL)
+      SDK_AUTH_SERVICE_URL: $(AZURE_SDK_AUTH_SERVICE_URL)
+      SDK_CONFIG_SERVICE_URL: $(AZURE_SDK_CONFIG_SERVICE_URL)
+      SDK_LOC_SERVICE_URL: $(AZURE_SDK_LOC_SERVICE_URL)
+    inputs:
+      command: test
+      arguments: '-c $(var_configuration) --filter FullyQualifiedName=$(SVC_UNITTEST_FQDN)'
+  - script: |
+      if [ -z $(var_configuration) ]; then echo "var_configuration is unset" && exit 1; else echo "var_configuration is set to '$(var_configuration)'"; fi
+      if [ -z "$AWS_ACCESS_KEY_ID" ]; then echo "AWS_ACCESS_KEY_ID is unset" && exit 1; else echo "AWS_ACCESS_KEY_ID is set to '$AWS_ACCESS_KEY_ID'"; fi
+      if [ -z "$AWS_SECRET_ACCESS_KEY" ]; then echo "AWS_SECRET_ACCESS_KEY is unset" && exit 1; else echo "AWS_SECRET_ACCESS_KEY is set to '$AWS_SECRET_ACCESS_KEY'"; fi
+      if [ -z "$AWS_DEFAULT_REGION" ]; then echo "AWS_DEFAULT_REGION is unset" && exit 1; else echo "AWS_DEFAULT_REGION is set to '$AWS_DEFAULT_REGION'"; fi
+
+      # ex: jobapp
+      if [ -z $(SVC_ECR_REPO) ]; then echo "SVC_ECR_REPO is unset" && exit 1; else echo "SVC_ECR_REPO is set to '$(SVC_ECR_REPO)'"; fi
+      # ex: {account}.dkr.ecr.{region}.amazonaws.com
+      if [ -z $(AZURE_ECR_HOST) ]; then echo "AZURE_ECR_HOST is unset" && exit 1; else echo "AZURE_ECR_HOST is set to '$(AZURE_ECR_HOST)'"; fi
+      if [ -z $(AZURE_NUGET_USERNAME) ]; then echo "AZURE_NUGET_USERNAME is unset" && exit 1; else echo "AZURE_NUGET_USERNAME is set to '$(AZURE_NUGET_USERNAME)'"; fi
+      if [ -z $(AZURE_NUGET_PAT) ]; then echo "AZURE_NUGET_PAT is unset" && exit 1; else echo "AZURE_NUGET_PAT is set to '$(AZURE_NUGET_PAT)'"; fi
+      if [ -z $(AZURE_NUGET_ENDPOINT) ]; then echo "AZURE_NUGET_ENDPOINT is unset" && exit 1; else echo "AZURE_NUGET_ENDPOINT is set to '$(AZURE_NUGET_ENDPOINT)'"; fi
+      if [ -z $(AZURE_EKS_GIT_REPO) ]; then echo "AZURE_EKS_GIT_REPO is unset" && exit 1; else echo "AZURE_EKS_GIT_REPO is set to '$(AZURE_EKS_GIT_REPO)'"; fi
+      if [ -z $(AZURE_EKS_CLUSTER) ]; then echo "AZURE_EKS_CLUSTER is unset" && exit 1; else echo "AZURE_EKS_CLUSTER is set to '$(AZURE_EKS_CLUSTER)'"; fi
+      if [ -z $(AZURE_EKS_DOMAIN) ]; then echo "AZURE_EKS_DOMAIN is unset" && exit 1; else echo "AZURE_EKS_DOMAIN is set to '$(AZURE_EKS_DOMAIN)'"; fi
+      if [ -z $(SVC_APP_GIT_REPO) ]; then echo "SVC_APP_GIT_REPO is unset" && exit 1; else echo "SVC_APP_GIT_REPO is set to '$(SVC_APP_GIT_REPO)'"; fi
+      if [ -z $(SVC_VERSION_FILE) ]; then echo "SVC_VERSION_FILE is unset" && exit 1; else echo "SVC_VERSION_FILE is set to '$(SVC_VERSION_FILE)'"; fi
+      if [ -z $(SVC_ECR_REPO) ]; then echo "SVC_ECR_REPO is unset" && exit 1; else echo "SVC_ECR_REPO is set to '$(SVC_ECR_REPO)'"; fi
+      if [ -z $(SVC_DOCKERFILE_PATH) ]; then echo "SVC_DOCKERFILE_PATH is unset" && exit 1; else echo "SVC_DOCKERFILE_PATH is set to '$(SVC_DOCKERFILE_PATH)'"; fi
+      if [ -z $(SVC_EKS_DEPLOY_FILE) ]; then echo "SVC_EKS_DEPLOY_FILE is unset" && exit 1; else echo "SVC_EKS_DEPLOY_FILE is set to '$(SVC_EKS_DEPLOY_FILE)'"; fi
+    env:
+      AWS_ACCESS_KEY_ID: $(AZURE_AWS_ACCESS_KEY_ID)
+      AWS_SECRET_ACCESS_KEY: $(AZURE_AWS_SECRET_ACCESS_KEY)
+      AWS_DEFAULT_REGION: $(AZURE_AWS_DEFAULT_REGION)
+    displayName: '[Custom] Variables Validation'
+  - script: |
+      # do you have .version file which puts version number at first line ?
+      # ex: 1.0.0.1
+      if [ -z $(SVC_VERSION_FILE) ]; then
+        echo "SVC_VERSION_FILE is unset"
+        echo "Skipping"
+        echo "##vso[task.setvariable variable=agent.jobstatus;]canceled"
+        exit 0
+      fi
+
+      if [ -z $(SVC_VERSION) ]; then
+        echo "SVC_VERSION is unset, try using SVC_VERSION_FILE instead"
+        var_version=$(cat $(SVC_VERSION_FILE) | head -n1)
+      else
+        echo "SVC_VERSION is set to '$(SVC_VERSION)'"
+        var_version=$(SVC_VERSION)
+      fi
+
+      if [ -n "$var_version" ]; then echo "var_version is set to '$var_version'"; else echo "var_version is unset" && exit 1; fi
+      if [ -z $(SVC_ECR_REPO) ]; then echo "SVC_ECR_REPO is unset" && exit 1; else echo "SVC_ECR_REPO is set to '$(SVC_ECR_REPO)'"; fi
+      if [ -z $(AZURE_ECR_HOST) ]; then echo "AZURE_ECR_HOST is unset" && exit 1; else echo "AZURE_ECR_HOST is set to '$(AZURE_ECR_HOST)'"; fi
+
+      # connect to ECR
+      echo $(aws ecr get-authorization-token --region $(AZURE_AWS_DEFAULT_REGION) --output text --query 'authorizationData[].authorizationToken' | base64 -d | cut -d: -f2) | sudo docker login -u AWS $(AZURE_ECR_HOST) --password-stdin
+
+      # var_ecr_latest_version order by desc
+      # ex: 1.0.0.0
+      var_ecr_latest_version=$(aws ecr describe-images \
+      --repository-name $(SVC_ECR_REPO) \
+      --output text \
+      --query 'sort_by(imageDetails,& imagePushedAt)[*].imageTags[*]' \
+      | tr '\t' '\n' \
+      | tail -1)
+      echo "var_ecr_latest_version is set to $var_ecr_latest_version"
+
+      # skip docker build if .version is same number as on ECR
+      if [ "$var_ecr_latest_version" == "$var_version" ]; then
+        echo "Versions are Equal."
+      else
+        echo "Versions are not Equal."
+      fi
+
+      var_ecr_host_with_tag="$(AZURE_ECR_HOST)/$(SVC_ECR_REPO):${var_version}"
+      if [ -z "$var_ecr_host_with_tag" ]; then echo "var_ecr_host_with_tag is unset" && exit 1; else echo "var_ecr_host_with_tag is set to '$var_ecr_host_with_tag'"; fi
+      echo "##vso[task.setvariable variable=var_version]$var_version"
+      echo "##vso[task.setvariable variable=var_ecr_latest_version]$var_ecr_latest_version"
+      echo "##vso[task.setvariable variable=var_ecr_host_with_tag]$var_ecr_host_with_tag"
+    env:
+      AWS_ACCESS_KEY_ID: $(AZURE_AWS_ACCESS_KEY_ID)
+      AWS_SECRET_ACCESS_KEY: $(AZURE_AWS_SECRET_ACCESS_KEY)
+      AWS_DEFAULT_REGION: $(AZURE_AWS_DEFAULT_REGION)
+    condition: and(succeeded(), eq(variables['var_version_check_enabled'], true))
+    displayName: '[Custom] Version Check'
+  - script: |
+      if [ -z $(var_version) ]; then echo "var_version is unset" && exit 1; else echo "var_version is set to '$(var_version)'"; fi
+      if [ -z $(var_ecr_latest_version) ]; then echo "var_ecr_latest_version is unset"; else echo "var_ecr_latest_version is set to '$(var_ecr_latest_version)'"; fi
+      if [ -z $(var_configuration) ]; then echo "var_configuration is unset" && exit 1; else echo "var_configuration is set to '$(var_configuration)'"; fi
+      if [ -z $(var_ecr_host_with_tag) ]; then echo "var_ecr_host_with_tag is unset" && exit 1; else echo "var_ecr_host_with_tag is set to '$(var_ecr_host_with_tag)'"; fi
+      if [ -z $(AZURE_NUGET_USERNAME) ]; then echo "AZURE_NUGET_USERNAME is unset" && exit 1; else echo "AZURE_NUGET_USERNAME is set to '$(AZURE_NUGET_USERNAME)'"; fi
+      if [ -z $(AZURE_NUGET_PAT) ]; then echo "AZURE_NUGET_PAT is unset" && exit 1; else echo "AZURE_NUGET_PAT is set to '$(AZURE_NUGET_PAT)'"; fi
+      if [ -z $(AZURE_NUGET_ENDPOINT) ]; then echo "AZURE_NUGET_ENDPOINT is unset" && exit 1; else echo "AZURE_NUGET_ENDPOINT is set to '$(AZURE_NUGET_ENDPOINT)'"; fi
+      if [ -z $(SVC_DOCKERFILE_PATH) ]; then echo "SVC_DOCKERFILE_PATH is unset" && exit 1; else echo "SVC_DOCKERFILE_PATH is set to '$(SVC_DOCKERFILE_PATH)'"; fi
+
+      if [ "$(var_ecr_latest_version)" == "$(var_version)" ]; then
+        echo "Versions are Equal."
+        echo "Skipping docker build"
+        exit 0
+      fi
+
+      echo "Starting docker build $(var_ecr_host_with_tag)"
+      sudo docker build \
+        --build-arg CONFIGURATION=$(var_configuration) \
+        --build-arg VERSION=$(var_version) \
+        --build-arg NUGET_USERNAME=$(AZURE_NUGET_USERNAME) \
+        --build-arg NUGET_ENDPOINT=$(AZURE_NUGET_ENDPOINT) \
+        --build-arg NUGET_PAT=$(AZURE_NUGET_PAT) \
+        . -t $(var_ecr_host_with_tag) -f $(SVC_DOCKERFILE_PATH)
+
+      # connect to ECR
+      echo $(aws ecr get-authorization-token --region $(AZURE_AWS_DEFAULT_REGION) --output text --query 'authorizationData[].authorizationToken' | base64 -d | cut -d: -f2) | sudo docker login -u AWS $(AZURE_ECR_HOST) --password-stdin
+      sudo docker push $(var_ecr_host_with_tag)
+
+      # do you want to pipe to production(pre-prod)?
+      if [ -z $(AZ_PROD_ECR_HOST) ]; then echo "AZ_PROD_ECR_HOST is unset" && exit 0; else echo "AZ_PROD_ECR_HOST is set to '$(AZ_PROD_ECR_HOST)'"; fi
+      if [ -z $(AZ_PROD_AWS_ACCESS_KEY_ID) ]; then echo "AZ_PROD_AWS_ACCESS_KEY_ID is unset" && exit 0; else echo "AZ_PROD_AWS_ACCESS_KEY_ID is set to '$(AZ_PROD_AWS_ACCESS_KEY_ID)'"; fi
+      if [ -z $(AZ_PROD_AWS_SECRET_ACCESS_KEY) ]; then echo "AZ_PROD_AWS_SECRET_ACCESS_KEY is unset" && exit 0; else echo "AZ_PROD_AWS_SECRET_ACCESS_KEY is set to '$(AZ_PROD_AWS_SECRET_ACCESS_KEY)'"; fi
+      if [ -z $(AZ_PROD_AWS_DEFAULT_REGION) ]; then echo "AZ_PROD_AWS_DEFAULT_REGION is unset" && exit 0; else echo "AZ_PROD_AWS_DEFAULT_REGION is set to '$(AZ_PROD_AWS_DEFAULT_REGION)'"; fi
+      if [ "$(var_pipe_to_preprod)" == "true" ]; then
+        local_preprod_tag="$(AZ_PROD_ECR_HOST)/$(SVC_ECR_REPO):$(var_version)"
+        echo "pre-production version is set to $local_preprod_tag"
+        export AWS_ACCESS_KEY_ID=$(AZ_PROD_AWS_ACCESS_KEY_ID)
+        export AWS_SECRET_ACCESS_KEY=$(AZ_PROD_AWS_SECRET_ACCESS_KEY)
+
+        # connect to ECR
+        echo $(aws ecr get-authorization-token --region $(AZ_PROD_AWS_DEFAULT_REGION) --output text --query 'authorizationData[].authorizationToken' | base64 -d | cut -d: -f2) | sudo docker login -u AWS $(AZ_PROD_ECR_HOST) --password-stdin
+        sudo docker tag $(var_ecr_host_with_tag) $local_preprod_tag
+        sudo docker push $local_preprod_tag
+      else
+        echo "var_pipe_to_preprod is NOT ture."
+        echo "Skipping"
+        exit 0
+      fi
+    env:
+      AWS_ACCESS_KEY_ID: $(AZURE_AWS_ACCESS_KEY_ID)
+      AWS_SECRET_ACCESS_KEY: $(AZURE_AWS_SECRET_ACCESS_KEY)
+      AWS_DEFAULT_REGION: $(AZURE_AWS_DEFAULT_REGION)
+    condition: and(succeeded(), eq(variables['var_docker_push_enabled'], true))
+    displayName: '[Custom] Docker build && push'
+  - script: |
+      if [ -z $(var_version) ]; then echo "$var_version is unset" && exit 1; else echo "$var_version is set to '$($var_version)'"; fi
+      if [ -z $(AZURE_NUGET_USERNAME) ]; then echo "AZURE_NUGET_USERNAME is unset" && exit 1; else echo "AZURE_NUGET_USERNAME is set to '$(AZURE_NUGET_USERNAME)'"; fi
+      if [ -z $(AZURE_NUGET_PAT) ]; then echo "AZURE_NUGET_PAT is unset" && exit 1; else echo "AZURE_NUGET_PAT is set to '$(AZURE_NUGET_PAT)'"; fi
+      if [ -z $(AZURE_NUGET_ENDPOINT) ]; then echo "AZURE_NUGET_ENDPOINT is unset" && exit 1; else echo "AZURE_NUGET_ENDPOINT is set to '$(AZURE_NUGET_ENDPOINT)'"; fi
+      if [ -z $(SVC_APP_GIT_REPO) ]; then echo "SVC_APP_GIT_REPO is unset" && exit 1; else echo "SVC_APP_GIT_REPO is set to '$(SVC_APP_GIT_REPO)'"; fi
+      if [ -z $(SVC_ECR_REPO) ]; then echo "SVC_ECR_REPO is unset" && exit 1; else echo "SVC_ECR_REPO is set to '$(SVC_ECR_REPO)'"; fi
+
+      local_git_tag="$(SVC_ECR_REPO)/v$(var_version)"
+      local_git_commit=`git rev-parse HEAD`
+      local_current_commit_tag=`git describe --contains $local_git_commit 2>/dev/null`
+      # tagging only if no specific tag found
+      if [ -z "$local_current_commit_tag" ]; then
+        echo "Updating $(var_version) to $local_git_tag"
+        git remote set-url origin $(SVC_APP_GIT_REPO)
+        git tag $local_git_tag
+        git push --tags
+        echo "Tag created and pushed: $local_git_tag"
+      else
+        echo "This commit is already tagged as: $local_current_commit_tag"
+      fi
+    env:
+      SYSTEM_ACCESSTOKEN: $(AZURE_NUGET_PAT)
+    condition: and(succeeded(), eq(variables['var_var_git_tagging_enabled'], true))
+    displayName: '[Custom] Auto tagging codebase'
+  - script: |
+      # do you want to auto apply to EKS ?
+      if [ -z $(AZURE_EKS_GIT_REPO) ]; then
+        echo "AZURE_EKS_GIT_REPO is unset"
+        echo "Skipping"
+        echo "##vso[task.setvariable variable=agent.jobstatus;]canceled"
+        exit 0
+      fi
+
+      # awscli
+      sudo apt-get --assume-yes install python3-setuptools
+      sudo pip3 install awscli
+      # aws --version
+
+      # aws-iam-authenticator
+      curl -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.14.6/2019-08-22/bin/linux/amd64/aws-iam-authenticator
+      chmod +x ./aws-iam-authenticator
+      mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$HOME/bin:$PATH
+      echo 'export PATH=$HOME/bin:$PATH' >> ~/.bashrc
+      # aws-iam-authenticator help
+
+      # eksctl
+      curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/latest_release/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+      sudo mv /tmp/eksctl /usr/local/bin
+      # eksctl version
+
+    env:
+      AWS_ACCESS_KEY_ID: $(AZURE_AWS_ACCESS_KEY_ID)
+      AWS_SECRET_ACCESS_KEY: $(AZURE_AWS_SECRET_ACCESS_KEY)
+      AWS_DEFAULT_REGION: $(AZURE_AWS_DEFAULT_REGION)
+    condition: and(succeeded(), eq(variables['var_eks_deploy_enabled'], true))
+    displayName: '[Custom] Install AWS/EKS Packages'
+  - script: |
+      if [ -z $(var_version) ]; then echo "var_version is unset" && exit 1; else echo "var_version is set to '$(var_version)'"; fi
+      if [ -z $(var_ecr_host_with_tag) ]; then echo "var_ecr_host_with_tag is unset" && exit 1; else echo "var_ecr_host_with_tag is set to '$(var_ecr_host_with_tag)'"; fi
+      if [ -z $(AZURE_NUGET_USERNAME) ]; then echo "AZURE_NUGET_USERNAME is unset" && exit 1; else echo "AZURE_NUGET_USERNAME is set to '$(AZURE_NUGET_USERNAME)'"; fi
+      if [ -z $(AZURE_NUGET_PAT) ]; then echo "AZURE_NUGET_PAT is unset" && exit 1; else echo "AZURE_NUGET_PAT is set to '$(AZURE_NUGET_PAT)'"; fi
+      if [ -z $(AZURE_NUGET_ENDPOINT) ]; then echo "AZURE_NUGET_ENDPOINT is unset" && exit 1; else echo "AZURE_NUGET_ENDPOINT is set to '$(AZURE_NUGET_ENDPOINT)'"; fi
+      if [ -z $(AZURE_EKS_GIT_REPO) ]; then echo "AZURE_EKS_GIT_REPO is unset" && exit 1; else echo "AZURE_EKS_GIT_REPO is set to '$(AZURE_EKS_GIT_REPO)'"; fi
+      if [ -z $(AZURE_EKS_CLUSTER) ]; then echo "AZURE_EKS_CLUSTER is unset" && exit 1; else echo "AZURE_EKS_CLUSTER is set to '$(AZURE_EKS_CLUSTER)'"; fi
+      if [ -z $(AZURE_EKS_DOMAIN) ]; then echo "AZURE_EKS_DOMAIN is unset" && exit 1; else echo "AZURE_EKS_DOMAIN is set to '$(AZURE_EKS_DOMAIN)'"; fi
+      if [ -z $(AZURE_TAG_REGEX) ]; then echo "AZURE_TAG_REGEX is unset" && exit 1; else echo "AZURE_TAG_REGEX is set to '$(AZURE_TAG_REGEX)'"; fi
+      if [ -z $(AZURE_DEVELOPER_EMAIL) ]; then echo "AZURE_DEVELOPER_EMAIL is unset" && exit 1; else echo "AZURE_DEVELOPER_EMAIL is set to '$(AZURE_DEVELOPER_EMAIL)'"; fi
+      if [ -z $(SVC_AWS_ACCESS_KEY_ID) ]; then echo "SVC_AWS_ACCESS_KEY_ID is unset" && exit 1; else echo "SVC_AWS_ACCESS_KEY_ID is set to '$(SVC_AWS_ACCESS_KEY_ID)'"; fi
+      if [ -z $(SVC_AWS_SECRET_ACCESS_KEY) ]; then echo "SVC_AWS_SECRET_ACCESS_KEY is unset" && exit 1; else echo "SVC_AWS_SECRET_ACCESS_KEY is set to '$(SVC_AWS_SECRET_ACCESS_KEY)'"; fi
+      if [ -z $(SVC_SDK_API_KEY) ]; then echo "SVC_SDK_API_KEY is unset" && exit 1; else echo "SVC_SDK_API_KEY is set to '$(SVC_SDK_API_KEY)'"; fi
+      if [ -z $(SVC_SDK_API_TOKEN) ]; then echo "SVC_SDK_API_TOKEN is unset" && exit 1; else echo "SVC_SDK_API_TOKEN is set to '$(SVC_SDK_API_TOKEN)'"; fi
+      if [ -z $(SVC_EKS_DEPLOY_FILE) ]; then echo "SVC_EKS_DEPLOY_FILE is unset" && exit 1; else echo "SVC_EKS_DEPLOY_FILE is set to '$(SVC_EKS_DEPLOY_FILE)'"; fi
+
+      cd ..
+      git clone -b dev $(AZURE_EKS_GIT_REPO) foundation.config && cd $_
+
+      # eks git push
+      local_git_tag="$(SVC_ECR_REPO)/v$(var_version)"
+      local_git_commit=`git rev-parse HEAD`
+      local_current_commit_tag=`git describe --contains $local_git_commit 2>/dev/null`
+      # tagging only if no specific tag found
+      if [ "$local_current_commit_tag" == "$local_git_tag" ]; then
+        echo "This commit is already tagged as: $local_current_commit_tag"
+        echo "Skipping"
+        echo "##vso[task.setvariable variable=agent.jobstatus;]canceled"
+        exit 0
+      fi
+
+      # initial kubectl config
+      mkdir -p ~/.aws
+      echo $'[default]\nregion = ${AWS_DEFAULT_REGION}\noutput = json\n' > ~/.aws/config
+      echo $'[default]\naws_access_key_id = ${AWS_ACCESS_KEY_ID}\naws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}\n' > ~/.aws/credentials
+      export AWS_PROFILE=default
+      aws sts get-caller-identity
+
+      eksctl utils write-kubeconfig --cluster=$(AZURE_EKS_CLUSTER)
+      kubectl config view --minify
+
+      # eks apply
+      sed -i "s/$(AZURE_ECR_HOST)\/$(SVC_ECR_REPO):$(AZURE_TAG_REGEX)/$(AZURE_ECR_HOST)\/$(SVC_ECR_REPO):$(var_version)/" $(SVC_EKS_DEPLOY_FILE)
+      export DOMAIN=$(AZURE_EKS_DOMAIN)
+      export SVC_AWS_ACCESS_KEY_ID=$(SVC_AWS_ACCESS_KEY_ID)
+      export SVC_AWS_SECRET_ACCESS_KEY=$(SVC_AWS_SECRET_ACCESS_KEY)
+      export SVC_SDK_API_KEY=$(SVC_SDK_API_KEY)
+      export SVC_SDK_API_TOKEN=$(SVC_SDK_API_TOKEN)
+      envsubst < $(SVC_EKS_DEPLOY_FILE) | kubectl apply -f -
+
+      if [ -z "$local_current_commit_tag" ]; then
+        git config --global user.email $(AZURE_DEVELOPER_EMAIL)
+        git config --global user.name $(AZURE_EKS_CLUSTER)
+        git commit -m "ci: [eks][$(AZURE_EKS_CLUSTER)] Auzre pipeline finished deploy $(SVC_ECR_REPO). image=$(var_ecr_host_with_tag), yaml=$(SVC_EKS_DEPLOY_FILE) " $(SVC_EKS_DEPLOY_FILE)
+        git push
+
+        echo "Updating $(var_version) to $local_git_tag"
+        git tag $local_git_tag
+        git push --tags
+        echo "Tag created and pushed: $local_git_tag"
+      else
+        echo "This commit is already tagged as: $local_current_commit_tag"
+      fi
+
+    env:
+      AWS_ACCESS_KEY_ID: $(AZURE_AWS_ACCESS_KEY_ID)
+      AWS_SECRET_ACCESS_KEY: $(AZURE_AWS_SECRET_ACCESS_KEY)
+      AWS_DEFAULT_REGION: $(AZURE_AWS_DEFAULT_REGION)
+    condition: and(succeeded(), eq(variables['var_eks_deploy_enabled'], true))
+    displayName: '[Custom] Deploy to EKS'
+  - script: |
+      # do you want to auto notify ?
+      if [ -z $(AZURE_SQS_ENDPOINT) ]; then
+        echo "AZURE_SQS_ENDPOINT is unset"
+        echo "Skipping"
+        exit 0
+      fi
+
+      # sqs notification
+      aws sqs send-message --queue-url $(AZURE_SQS_ENDPOINT) \
+        --message-body "{'kind':4,'title':'ci $(agent.jobstatus)','message':'ci: Auzre pipeline finished deploy $(SVC_ECR_REPO). image=$(var_ecr_host_with_tag), yaml=$(SVC_EKS_DEPLOY_FILE) ','toList':'#foundation-notify-dev'}" \
+        --message-group-id eks-$(SVC_ECR_REPO) \
+        --message-deduplication-id eks-$(SVC_ECR_REPO)
+    env:
+      AWS_ACCESS_KEY_ID: $(AZURE_AWS_ACCESS_KEY_ID)
+      AWS_SECRET_ACCESS_KEY: $(AZURE_AWS_SECRET_ACCESS_KEY)
+      AWS_DEFAULT_REGION: $(AZURE_AWS_DEFAULT_REGION)
+    condition: and(always(), eq(variables['var_notification_enabled'], true))
+    displayName: '[Custom] Notification'

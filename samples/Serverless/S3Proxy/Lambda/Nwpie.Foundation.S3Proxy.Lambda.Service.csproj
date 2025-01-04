@@ -1,0 +1,69 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <EnableDefaultContentItems>false</EnableDefaultContentItems>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <AWSProjectType>Lambda</AWSProjectType>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="log\**" />
+    <Content Remove="log\**" />
+    <EmbeddedResource Remove="log\**" />
+    <None Remove="log\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="favicon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="robots.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="platform.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="platform.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="platform.Production.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="platform.Staging.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="platform.Staging_2.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />
+    <!--<PackageReference Include="Microsoft.AspNetCore.App" />-->
+    <PackageReference Include="AWSSDK.Core" Version="3.7.400.71" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.410.13" />
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.301" />
+    <PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="9.0.3" />
+    <PackageReference Include="AWS.Logger.Log4net" Version="3.5.3" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\Hosting\ServiceStack\Nwpie.Foundation.Hosting.ServiceStack.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Logging\Log4net\Nwpie.Foundation.Logging.Log4net.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Measurement\SDK\Nwpie.Foundation.Measurement.SDK.csproj" />
+    <ProjectReference Include="..\..\..\..\src\MessageQueue\Factory\Nwpie.Foundation.MessageQueue.Factory.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Notification\Contract\Nwpie.Foundation.Notification.Contract.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Notification\SDK\Nwpie.Foundation.Notification.SDK.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Notification\Smtp\Nwpie.Foundation.Notification.Smtp.csproj" />
+    <ProjectReference Include="..\..\..\..\src\ServiceNode\HealthCheck\Nwpie.Foundation.ServiceNode.HealthCheck.csproj" />
+    <ProjectReference Include="..\..\..\..\src\ServiceNode\ServiceStack\Nwpie.Foundation.ServiceNode.ServiceStack.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Storage\S3\Nwpie.Foundation.Storage.S3.csproj" />
+    <ProjectReference Include="..\Contract\Nwpie.Foundation.S3Proxy.Contract.csproj" />
+  </ItemGroup>
+</Project>

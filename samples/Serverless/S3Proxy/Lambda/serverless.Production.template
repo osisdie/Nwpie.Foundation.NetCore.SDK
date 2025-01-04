@@ -1,0 +1,123 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Transform": "AWS::Serverless-2016-10-31",
+  "Description": "An AWS Serverless Application that uses the ASP.NET Core framework running in Amazon Lambda.",
+
+  "Parameters": {
+    "ShouldCreateBucket": {
+      "Type": "String",
+      "AllowedValues": [
+        "true",
+        "false"
+      ],
+      "Description": "If true then the S3 bucket that will be proxied will be created with the CloudFormation stack."
+    },
+    "BucketName": {
+      "Type": "String",
+      "Description": "Name of S3 bucket that will be proxied. If left blank a name will be generated.",
+      "MinLength": "0"
+    }
+  },
+  "Conditions": {
+    "CreateS3Bucket": {
+      "Fn::Equals": [
+        {
+          "Ref": "ShouldCreateBucket"
+        },
+        "true"
+      ]
+    },
+    "BucketNameGenerated": {
+      "Fn::Equals": [
+        {
+          "Ref": "BucketName"
+        },
+        ""
+      ]
+    }
+  },
+
+  "Resources": {
+    "AspNetCoreFunction": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "Nwpie.Foundation.S3Proxy.Lambda.Service::Nwpie.Foundation.S3Proxy.Lambda.Service.LambdaEntryPoint::FunctionHandlerAsync",
+        "Runtime": "dotnet8",
+        "CodeUri": "",
+        "MemorySize": 256,
+        "Timeout": 30,
+        "Role": null,
+        "Policies": [
+          "AWSLambdaFullAccess"
+        ],
+        "Environment": {
+          "Variables": {
+            "ASPNETCORE_ENVIRONMENT": "Production",
+            "SDK_API_NAME": "nwpie.admin.prod",
+            "SDK_API_KEY": "apiw2+HCotsEpjZ+uDTfDEk/w==",
+            "SDK_API_TOKEN": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBJZCI6IkFwcDA3YjUwOTIwM2Q3ZjExZTk5MzA3MDZkZjlhNDI1YjM2IiwiYXBpS2V5IjoiYXBpdzIrSENvdHNFcGpaK3VEVGZERWsvdz09IiwiYXBpTmFtZSI6ImNhcmsuYWRtaW4ucHJvZCIsImFjY291bnRJZCI6bnVsbCwiZW1haWwiOm51bGwsIm5hbWUiOm51bGwsImdlbmRlciI6MCwiY2xpZW50U2VjcmV0IjpudWxsLCJyZW1vdGVJUCI6bnVsbCwicGVybWlzc2lvbnMiOm51bGwsImRldmljZUlkIjpudWxsLCJhYWlkIjpudWxsLCJpZGZhIjpudWxsLCJtYWMiOm51bGwsInVzZXJBZ2VudCI6bnVsbCwiaXNNb2JpbGUiOmZhbHNlLCJzdGF0dXMiOm51bGwsImNyZWF0b3IiOiJEZWZhdWx0Snd0QXV0aFNlcnZpY2VgMV9fMCIsImtpbmQiOjEsImxldmVsIjo5MSwiZXhwaXJlQXQiOiIyMDIwLTA3LTEzVDAwOjAwOjAwWiIsInVwZGF0ZUF0IjoiMjAyMC0wMS0xNVQxMDowMjoyNS42MjQ5NDQyWiIsImV4dGVuc2lvbk1hcCI6bnVsbCwiX3RzIjoiMjAyMC0wMS0xNVQxMDowMjoyNS42MjQ5NDQyWiIsIl9pZCI6IjAxZHltYWV5Zmt0ZDEyMzc1ZDhoMGNncm42In0.oB7dvfRkW8Lj3y7eKMrbMlM3Z3vP1ohuidRjP6YeoWw",
+            "CARK_BASE_SERVICE_URL": "https://api.kevinw.net/foundation",
+            "SDK_AUTH_SERVICE_URL": "https://api.kevinw.net/auth",
+            "SDK_LOC_SERVICE_URL": "https://api.kevinw.net/loc"
+          }
+        },
+        "Events": {
+          "ProxyResource": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/{proxy+}",
+              "Method": "ANY"
+            }
+          },
+          "RootResource": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/",
+              "Method": "ANY"
+            }
+          }
+        }
+      }
+    },
+
+    "Bucket": {
+      "Type": "AWS::S3::Bucket",
+      "Condition": "CreateS3Bucket",
+      "Properties": {
+        "BucketName": {
+          "Fn::If": [
+            "BucketNameGenerated",
+            {
+              "Ref": "AWS::NoValue"
+            },
+            {
+              "Ref": "BucketName"
+            }
+          ]
+        }
+      }
+    }
+  },
+
+  "Outputs": {
+    "ApiURL": {
+      "Description": "API endpoint URL for Prod environment",
+      "Value": {
+        "Fn::Sub": "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+      }
+    },
+    "S3ProxyBucket": {
+      "Value": {
+        "Fn::If": [
+          "CreateS3Bucket",
+          {
+            "Ref": "Bucket"
+          },
+          {
+            "Ref": "BucketName"
+          }
+        ]
+      }
+    }
+  }
+}

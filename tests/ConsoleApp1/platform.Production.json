@@ -1,0 +1,28 @@
+﻿{
+  "foundation": {
+    "version": "1.0.0.5",
+    "authServiceUrl": "https://api.kevinw.net/auth",
+    "baseServiceUrl": "https://api.kevinw.net/foundation",
+    "locationServiceUrl": "https://api.kevinw.net/loc",
+    "featureToggle": {
+      "prod.Production.mapping": false
+    },
+    "startupJsonFileList": {
+      "appsettings.json": false,
+      "conf/appsettings.Production.json": false
+    },
+    "loc": {
+      "serviceDiscoveryEnabled": false,
+      "serviceDiscoveryHostUrl": "http://ip-172-31-24-65.us-west-2.compute.internal:8500"
+    },
+    "cache": {
+      "defaultProvider": "RedisCache",
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "localLoggingFile": ""
+    },
+    "apm": {
+      "influxDefaultDB": "foundation_temp"
+    }
+  }
+}

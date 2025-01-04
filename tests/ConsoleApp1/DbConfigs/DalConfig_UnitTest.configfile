@@ -1,0 +1,14 @@
+﻿<?xml version="1.0"?>
+<dalConfig>
+  <databaseSet databaseName="auth_db" provider="mysql" connectionStringName="foundation.aws.mysql.connectionstring.auth_db">
+    <dataCommand name="Unittest:Db:Version" commandType="Text" commandTimeOut="3">
+      <commandText>
+        <![CDATA[
+SELECT VERSION() as `version`;
+        ]]>
+      </commandText>
+      <parameters>
+      </parameters>
+    </dataCommand>
+  </databaseSet>
+</dalConfig>

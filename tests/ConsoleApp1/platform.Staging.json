@@ -1,0 +1,28 @@
+﻿{
+  "foundation": {
+    "version": "1.0.0.3",
+    "authServiceUrl": "https://api-dev.kevinw.net/auth",
+    "baseServiceUrl": "https://api-dev.kevinw.net/foundation",
+    "locationServiceUrl": "https://api-dev.kevinw.net/loc",
+    "featureToggle": {
+      "stage.Staging.mapping": false
+    },
+    "startupJsonFileList": {
+      "appsettings.json": false,
+      "conf/appsettings.Staging.json": false
+    },
+    "loc": {
+      "serviceDiscoveryEnabled": false,
+      "serviceDiscoveryHostUrl": "http://35.161.197.46:8500"
+    },
+    "cache": {
+      "defaultProvider": "LocalCache",
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "localLoggingFile": ""
+    },
+    "apm": {
+      "influxDefaultDB": "foundation_temp"
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+	"AWSTemplateFormatVersion" : "2010-09-09",
+	"Transform" : "AWS::Serverless-2016-10-31",
+	"Description" : "An AWS Serverless Application that uses the ASP.NET Core framework running in Amazon Lambda.",
+
+	"Parameters" : {
+		"ShouldCreateBucket" : {
+			"Type" : "String",
+			"AllowedValues" : ["true", "false"],
+			"Description" : "If true then the S3 bucket that will be proxied will be created with the CloudFormation stack."
+		},
+		"BucketName" : {
+			"Type" : "String",
+			"Description" : "Name of S3 bucket that will be proxied. If left blank a name will be generated.",
+			"MinLength" : "0"
+		}
+	},
+
+	"Conditions" : {
+	},
+
+	"Resources" : {
+			"AspNetCoreFunction" : {
+				"Type" : "AWS::Serverless::Function",
+				"Properties": {
+				"Handler": "Nwpie.Foundation.Notification.Lambda.Service::Nwpie.Foundation.Notification.Lambda.Service.LambdaEntryPoint::FunctionHandlerAsync",
+				"Runtime": "dotnet8",
+				"CodeUri": "",
+				"MemorySize": 256,
+				"Timeout": 30,
+				"Role": "arn:aws:iam::966385500434:role/Lambda.SQSNotification",
+				"Policies": [ "AWSLambdaFullAccess" ],
+				"Environment" : {
+					"Variables" : {
+						"ASPNETCORE_ENVIRONMENT": "Development",
+						"SDK_API_TOKEN": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBJZCI6IkFwcDA3YjUwOTIwM2Q3ZjExZTk5MzA3MDZkZjlhNDI1YjM2IiwiYXBpS2V5IjoiYXBpRGxIY0RCNkd0MlJGU3JTcFlQeklNZz09IiwiYXBpTmFtZSI6ImNhcmsuYWRtaW4uZGV2IiwiYWNjb3VudElkIjpudWxsLCJlbWFpbCI6bnVsbCwibmFtZSI6bnVsbCwiZ2VuZGVyIjowLCJjbGllbnRTZWNyZXQiOm51bGwsInJlbW90ZUlQIjpudWxsLCJwZXJtaXNzaW9ucyI6bnVsbCwiZGV2aWNlSWQiOm51bGwsImFhaWQiOm51bGwsImlkZmEiOm51bGwsIm1hYyI6bnVsbCwidXNlckFnZW50IjpudWxsLCJpc01vYmlsZSI6ZmFsc2UsInN0YXR1cyI6bnVsbCwiY3JlYXRvciI6IkRlZmF1bHRKd3RBdXRoU2VydmljZWAxX18wIiwia2luZCI6MSwibGV2ZWwiOjkxLCJleHBpcmVBdCI6IjIwMjEtMDEtMTJUMDA6MDA6MDBaIiwidXBkYXRlQXQiOiIyMDIwLTAxLTEzVDE0OjUyOjA2LjM4ODUwNjhaIiwiZXh0ZW5zaW9uTWFwIjpudWxsLCJfdHMiOiIyMDIwLTAxLTEzVDE0OjUyOjA2LjM4ODUwNjhaIiwiX2lkIjoiMDFkeWZwOHBqMGs3dHh6Zm43YWNuN2dmYmoifQ.RuW4ZF7LVcJuSZn3cZ7rUQqSc2Oa-gm3WTNfgR6B4AQ",
+						"SDK_API_NAME": "ntfy.dev",
+						"SDK_API_KEY": "apiHqXjB+1+hO4lucil3K6YIA==",
+						"CARK_BASE_SERVICE_URL": "https://api-dev.kevinw.net/foundation",
+						"SDK_AUTH_SERVICE_URL": "https://api-dev.kevinw.net/auth",
+						"SDK_LOC_SERVICE_URL": "https://api-dev.kevinw.net/loc"
+					}
+				},
+				"Events": {
+					"ProxyResource": {
+						"Type": "Api",
+						"Properties": {
+							"Path": "/{proxy+}",
+							"Method": "ANY"
+						}
+					},
+					"RootResource": {
+						"Type": "Api",
+						"Properties": {
+							"Path": "/",
+							"Method": "ANY"
+						}
+					}
+				}
+			}
+		}
+	},
+
+	"Outputs" : {
+		"ApiURL" : {
+			"Description" : "API endpoint URL for Production environment",
+			"Value" : { "Fn::Sub" : "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/" }
+		}
+	}
+}

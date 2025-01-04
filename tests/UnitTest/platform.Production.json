@@ -1,0 +1,25 @@
+﻿{
+  "foundation": {
+    "version": "1.0.0.5",
+    "featureToggle": {
+      "prod.Production.mapping": false
+    },
+    "startupJsonFileList": {
+      "appsettings.json": false,
+      "conf/appsettings.Production.json": false
+    },
+    "loc": {
+      "serviceDiscoveryEnabled": false,
+      "serviceDiscoveryHostUrl": "http://ip-172-31-24-65.us-west-2.compute.internal:8500"
+    },
+    "cache": {
+      "defaultProvider": "RedisCache", // RedisCache, LocalCache
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "localLoggingFile": ""
+    },
+    "apm": {
+      "influxDefaultDB": "foundation_temp"
+    }
+  }
+}

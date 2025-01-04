@@ -1,0 +1,23 @@
+{
+  "profiles": {
+    "Nwpie.xUnit": {
+      "commandName": "Project",
+      //"commandLineArgs": "--environment Testing",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Testing",
+        //"ASPNETCORE_ENVIRONMENT": "Development"
+        //"ASPNETCORE_ENVIRONMENT": "Production"
+        //"AWS_ACCESS_KEY_ID": "",
+        //"AWS_SECRET_ACCESS_KEY": "",
+        //"SDK_API_TOKEN": "",
+        "SDK_API_KEY": "fake_api_key.debug",
+        "SDK_API_NAME": "fake_api_name.debug",
+        "SDK_API_BASE_URL": "https://api-dev.kevinw.net",
+        //"SDK_AUTH_SERVICE_URL": "http://localhost:5115"
+        //"SDK_LOC_SERVICE_URL": "http://localhost:5155"
+        //"SDK_NOTIFY_SERVICE_URL": "http://localhost:5160"
+        "SDK_CONFIG_SERVICE_URL": "https://api-dev.kevinw.net/config"
+      }
+    }
+  }
+}

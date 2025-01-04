@@ -1,0 +1,18 @@
+﻿{
+  "env": "debug",
+  "app": {
+    "name": "storage",
+    "serviceMail": "kevin.wu@kevinw.net",
+    "services": {
+      "autoDI": true,
+      "Storage": {
+        "host": "http://localhost:5300",
+        //"host": "https://api-dev.kevinw.net/storage",
+        "botNotifyGroupId": "fake_group_id",
+        "defaultBucketName": "svc-asset-api-dev",
+        "defaultCacheProvider": "LocalCache", // LocalCache or Redis
+        "defaultAuthProvider": "JwtTokenService" // JwtTokenService or AesTokenService
+      }
+    }
+  }
+}

@@ -1,0 +1,62 @@
+﻿{
+  "foundation": {
+    "version": "1.0.0.1",
+    "authServiceUrl": "https://api-dev.kevinw.net/auth",
+    "baseServiceUrl": "https://api-dev.kevinw.net/foundation",
+    "locationServiceUrl": "https://api-dev.kevinw.net/loc",
+    "remoteConfigKeys": [],
+    "featureToggle": {
+      "debug.undefine.mapping": false
+    },
+    "startupJsonFileList": {
+      "appsettings.json": false
+    },
+    "loc": {
+      "asConfigServerEnabled": true,
+      "serviceDiscoveryEnabled": false,
+      "serviceDiscoveryHostUrl": "http://127.0.0.1:8500",
+      "listenLocationEventEnabled": true,
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "localLoggingFile": ""
+    },
+    "api": {
+      "bearToken": "",
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "localLoggingFile": ""
+    },
+    "dal": {
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "localLoggingFile": ""
+    },
+    "cache": {
+      "defaultProvider": "LocalCache",
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "collectCacheHitMetricEnabled": true,
+      "localLoggingFile": ""
+    },
+    "mq": {
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "localLoggingFile": ""
+    },
+    "apm": {
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "maxMessageCount": 1000,
+      "sendFrequency": 1000,
+      "influxDefaultDB": "foundation_temp",
+      "localLoggingFile": ""
+    },
+    "localCfg": {
+      "enabled": false,
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "localLoggingFile": "",
+      "localConfigFilePath": "conf/localcfg.Development.json"
+    }
+  }
+}

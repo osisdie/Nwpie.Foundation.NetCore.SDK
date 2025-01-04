@@ -1,0 +1,202 @@
+﻿<?xml version="1.0"?>
+<dalConfig>
+  <databaseSet databaseName="auth_db" provider="mysql" connectionStringName="foundation.aws.mysql.connectionstring.auth_db">
+    <dataCommand name="Unittest:Kvs:Truncate" commandType="Text">
+      <commandText>
+        <![CDATA[
+set @_count = 0;
+DELETE FROM APPLICATION WHERE app_id like 'dropme%' or sys_name like 'dropme%';
+set @_count = @_count + ROW_COUNT();
+
+DELETE FROM API_KEY WHERE apikey like 'dropme%' or sys_name like 'dropme%';
+set @_count = @_count + ROW_COUNT();
+
+DELETE FROM CONFIG_KEY WHERE configkey like 'dropme%';
+set @_count = @_count + ROW_COUNT();
+
+DELETE FROM CONFIG_VALUES WHERE configkey like 'dropme%';
+set @_count = @_count + ROW_COUNT();
+
+DELETE FROM PERMISSION_CONFIG_KEY WHERE configkey like 'dropme%';
+set @_count = @_count + ROW_COUNT();
+
+SELECT @_count;
+        ]]>
+      </commandText>
+      <parameters>
+      </parameters>
+    </dataCommand>
+    <dataCommand name="Unittest:Kvs:Initialize:Application:Apple" commandType="Text">
+      <commandText>
+        <![CDATA[
+set @_count = 0;
+INSERT INTO APPLICATION (app_id, sys_name, name, description, status, access_level)
+SELECT 'dropme.apple', 'dropme.apple', 'dropme.apple', 'Description: dropme.apple', 'app.valid', 1;
+set @_count = @_count + ROW_COUNT();
+
+INSERT INTO API_KEY (parent_apikey, apikey, app_id, sys_name, env, status, secretkey, access_level)
+SELECT 'app5e62eb3cdacc11e9998700155d19b8e2', 'dropme.apple', 'dropme.apple', 'dropme.apikey.apple.base', 'base', 'apikey.valid', 'apple', 1;
+set @_count = @_count + ROW_COUNT();
+
+INSERT INTO API_KEY (parent_apikey, apikey, app_id, sys_name, env, status, secretkey, access_level)
+SELECT 'dropme.apple', 'dropme.apikey.apple.debug', 'dropme.apple', 'dropme.apikey.apple.debug', 'debug', 'apikey.valid', 'apple', 1;
+set @_count = @_count + ROW_COUNT();
+
+INSERT INTO API_KEY (parent_apikey, apikey, app_id, sys_name, env, status, secretkey, access_level)
+SELECT 'dropme.apple', 'dropme.apikey.apple.dev', 'dropme.apple', 'dropme.apikey.apple.dev', 'dev', 'apikey.valid', 'apple', 1;
+set @_count = @_count + ROW_COUNT();
+
+SELECT @_count;
+        ]]>
+      </commandText>
+      <parameters>
+      </parameters>
+    </dataCommand>
+    <dataCommand name="Unittest:Kvs:Initialize:Application:Banana" commandType="Text">
+      <commandText>
+        <![CDATA[
+set @_count = 0;
+INSERT INTO APPLICATION (app_id, sys_name, name, description, status, access_level)
+SELECT 'dropme.banana', 'dropme.banana', 'dropme.banana', 'Description: dropme.banana', 'app.valid', 1;
+set @_count = @_count + ROW_COUNT();
+
+INSERT INTO API_KEY (parent_apikey, apikey, app_id, sys_name, env, status, secretkey, access_level)
+SELECT 'app5e62eb3cdacc11e9998700155d19b8e2', 'dropme.banana', 'dropme.banana', 'dropme.apikey.banana.base', 'base', 'apikey.valid', 'banana', 1;
+set @_count = @_count + ROW_COUNT();
+
+INSERT INTO API_KEY (parent_apikey, apikey, app_id, sys_name, env, status, secretkey, access_level)
+SELECT 'dropme.banana', 'dropme.apikey.banana.debug', 'dropme.banana', 'dropme.apikey.banana.debug', 'debug', 'apikey.valid', 'banana', 1;
+set @_count = @_count + ROW_COUNT();
+
+INSERT INTO API_KEY (parent_apikey, apikey, app_id, sys_name, env, status, secretkey, access_level)
+SELECT 'dropme.banana', 'dropme.apikey.banana.dev', 'dropme.banana', 'dropme.apikey.banana.dev', 'dev', 'apikey.valid', 'banana', 1;
+set @_count = @_count + ROW_COUNT();
+
+SELECT @_count;
+        ]]>
+      </commandText>
+      <parameters>
+      </parameters>
+    </dataCommand>
+    <dataCommand name="Unittest:Kvs:Initialize:Application:Cherry" commandType="Text">
+      <commandText>
+        <![CDATA[
+set @_count = 0;
+INSERT INTO APPLICATION(app_id, sys_name, name, description, status, access_level)
+SELECT 'dropme.cherry', 'dropme.cherry', 'dropme.cherry', 'Description: dropme.cherry', 'app.valid', 1;
+set @_count = @_count + ROW_COUNT();
+
+INSERT INTO API_KEY (parent_apikey, apikey, app_id, sys_name, env, status, secretkey, access_level)
+SELECT 'app5e62eb3cdacc11e9998700155d19b8e2', 'dropme.cherry', 'dropme.cherry', 'dropme.apikey.cherry.base', 'base', 'apikey.valid', 'cherry', 1;
+set @_count = @_count + ROW_COUNT();
+
+INSERT INTO API_KEY (parent_apikey, apikey, app_id, sys_name, env, status, secretkey, access_level)
+SELECT 'dropme.cherry', 'dropme.apikey.cherry.debug', 'dropme.cherry', 'dropme.apikey.cherry.debug', 'debug', 'apikey.valid', 'cherry', 1;
+set @_count = @_count + ROW_COUNT();
+
+INSERT INTO API_KEY (parent_apikey, apikey, app_id, sys_name, env, status, secretkey, access_level)
+SELECT 'dropme.cherry', 'dropme.apikey.cherry.dev', 'dropme.cherry', 'dropme.apikey.cherry.dev', 'dev', 'apikey.valid', 'cherry', 1 ;
+set @_count = @_count + ROW_COUNT();
+
+INSERT INTO APPLICATION(app_id, sys_name, name, description, status, access_level)
+SELECT 'dropme.cherry.pie', 'dropme.cherry.pie', 'dropme.cherry.pie', 'Description: dropme.cherry.pie', 'app.valid', 1;
+set @_count = @_count + ROW_COUNT();
+
+INSERT INTO API_KEY (parent_apikey, apikey, app_id, sys_name, env, status, secretkey, access_level)
+SELECT 'dropme.cherry', 'dropme.cherry.pie', 'dropme.cherry.pie', 'dropme.apikey.cherry.pie.base', 'base', 'apikey.valid', 'cherry.pie', 1;
+set @_count = @_count + ROW_COUNT();
+
+INSERT INTO API_KEY (parent_apikey, apikey, app_id, sys_name, env, status, secretkey, access_level)
+SELECT 'dropme.cherry.pie', 'dropme.apikey.cherry.pie.debug', 'dropme.cherry.pie', 'dropme.apikey.cherry.pie.debug', 'debug', 'apikey.valid', 'cherry.pie', 1;
+set @_count = @_count + ROW_COUNT();
+
+INSERT INTO API_KEY (parent_apikey, apikey, app_id, sys_name, env, status, secretkey, access_level)
+SELECT 'dropme.cherry.pie', 'dropme.apikey.cherry.pie.dev', 'dropme.cherry.pie', 'dropme.apikey.cherry.pie.dev', 'dev', 'apikey.valid', 'cherry.pie', 1;
+set @_count = @_count + ROW_COUNT();
+
+SELECT @_count;
+        ]]>
+      </commandText>
+      <parameters>
+      </parameters>
+    </dataCommand>
+    <dataCommand name="Unittest:Kvs:Initialize:Configkey" commandType="Text">
+      <commandText>
+        <![CDATA[
+set @_count = 0;
+INSERT INTO CONFIG_KEY (configkey, app_id, section, encrypted)
+SELECT 'dropme.nwpie.say', 'app5e62eb3cdacc11e9998700155d19b8e2', 'founcation.say', 1;
+set @_count = @_count + ROW_COUNT();
+
+INSERT INTO CONFIG_KEY (configkey, app_id, section, encrypted)
+SELECT 'dropme.apple.say', 'dropme.apple', 'app.say', 0;
+set @_count = @_count + ROW_COUNT();
+
+INSERT INTO CONFIG_KEY (configkey, app_id, section, encrypted)
+SELECT 'dropme.banana.say', 'dropme.banana', 'app.say', 0;
+set @_count = @_count + ROW_COUNT();
+
+SELECT @_count;
+        ]]>
+      </commandText>
+      <parameters>
+      </parameters>
+    </dataCommand>
+    <dataCommand name="Unittest:Kvs:Initialize:ConfigValues" commandType="Text">
+      <commandText>
+        <![CDATA[
+set @_count = 0;
+INSERT INTO CONFIG_VALUES (configkey, app_id, apikey, version, version_display, rawdata, encrypted)
+SELECT 'dropme.nwpie.say', 'app5e62eb3cdacc11e9998700155d19b8e2', 'app5e62eb3cdacc11e9998700155d19b8e2', 'latest', '1.0.0', '17YW4EzITQDBl5LackmevQ==', 1;
+set @_count = @_count + ROW_COUNT();
+
+INSERT INTO CONFIG_VALUES (configkey, app_id, apikey, version, version_display, rawdata, encrypted)
+SELECT 'dropme.nwpie.say', 'app5e62eb3cdacc11e9998700155d19b8e2', 'dropme.apikey.apple.debug', 'latest', '1.0.0', 'p9ZJHoa2rerO8FerSwzLSVEQ9ebw9qLvFj7F9a/sQiA=', 1;
+set @_count = @_count + ROW_COUNT();
+
+INSERT INTO CONFIG_VALUES (configkey, app_id, apikey, version, version_display, rawdata, encrypted)
+SELECT 'dropme.apple.say', 'dropme.apple', 'dropme.apple', 'latest', '1.0.0', 'hi~ I"m apple', 0;
+set @_count = @_count + ROW_COUNT();
+
+INSERT INTO CONFIG_VALUES (configkey, app_id, apikey, version, version_display, rawdata, encrypted)
+SELECT 'dropme.banana.say', 'dropme.banana', 'dropme.banana', 'latest', '1.0.0', 'hi~ I"m banana', 0;
+set @_count = @_count + ROW_COUNT();
+
+INSERT INTO CONFIG_VALUES (configkey, app_id, apikey, version, version_display, rawdata, encrypted)
+SELECT 'dropme.banana.say', 'dropme.banana', 'dropme.apikey.banana.debug', 'latest', '1.0.1', 'hi~ I"m banana and eating', 0;
+set @_count = @_count + ROW_COUNT();
+
+SELECT @_count;
+        ]]>
+      </commandText>
+      <parameters>
+      </parameters>
+    </dataCommand>
+    <dataCommand name="Unittest:Kvs:Initialize:Permission" commandType="Text">
+      <commandText>
+        <![CDATA[
+set @_count = 0;
+INSERT INTO PERMISSION_CONFIG_KEY (configkey, app_id, target_id, target_type, perm_id, weight, blocked)
+SELECT 'dropme.nwpie.say', 'app5e62eb3cdacc11e9998700155d19b8e2', 'dropme.apple', 'app_id', 'Prm8870c07f3d8111e9930706df9a425b36', 3, 0;
+set @_count = @_count + ROW_COUNT();
+
+INSERT INTO PERMISSION_CONFIG_KEY (configkey, app_id, target_id, target_type, perm_id, weight, blocked)
+SELECT 'dropme.nwpie.say', 'app5e62eb3cdacc11e9998700155d19b8e2', 'dropme.banana', 'app_id', 'Prm8870c07f3d8111e9930706df9a425b36', 3, 0;
+set @_count = @_count + ROW_COUNT();
+
+INSERT INTO PERMISSION_CONFIG_KEY (configkey, app_id, target_id, target_type, perm_id, weight, blocked)
+SELECT 'dropme.banana.say', 'dropme.banana', 'dropme.cherry', 'app_id', 'Prma67841ba3d8111e9930706df9a425b36', 21, 0;
+set @_count = @_count + ROW_COUNT();
+
+INSERT INTO PERMISSION_CONFIG_KEY (configkey, app_id, target_id, target_type, perm_id, weight, blocked)
+SELECT 'dropme.nwpie.say', 'app5e62eb3cdacc11e9998700155d19b8e2', 'dropme.cherry', 'app_id', 'Prm8870c07f3d8111e9930706df9a425b36', 1000, 1;
+set @_count = @_count + ROW_COUNT();
+
+SELECT @_count;
+        ]]>
+      </commandText>
+      <parameters>
+      </parameters>
+    </dataCommand>
+  </databaseSet>
+</dalConfig>

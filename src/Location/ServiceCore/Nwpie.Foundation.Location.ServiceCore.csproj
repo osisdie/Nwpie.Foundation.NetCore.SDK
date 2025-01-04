@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Caching\Redis\Nwpie.Foundation.Caching.Redis.csproj" />
+    <ProjectReference Include="..\..\MessageQueue\SNS\Nwpie.Foundation.MessageQueue.SNS.csproj" />
+    <ProjectReference Include="..\..\Notification\SDK\Nwpie.Foundation.Notification.SDK.csproj" />
+    <ProjectReference Include="..\..\MessageQueue\Factory\Nwpie.Foundation.MessageQueue.Factory.csproj" />
+    <ProjectReference Include="..\..\ServiceNode\ServiceStack\Nwpie.Foundation.ServiceNode.ServiceStack.csproj" />
+    <ProjectReference Include="..\Core\Nwpie.Foundation.Location.Core.csproj" />
+  </ItemGroup>
+
+</Project>

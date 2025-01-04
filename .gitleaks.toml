@@ -1,0 +1,80 @@
+title = "Gitleaks Configuration"
+description = "Configuration for detecting secrets including connection strings"
+version = 18
+
+[[rules]]
+id = "aws-access-key-id"
+description = "AWS Access Key ID"
+regex = '''AKIA[0-9A-Z]{16}'''
+
+[[rules]]
+id = "aws-secret-access-key"
+description = "AWS Secret Access Key"
+regex = '''(?i)aws(.{0,20})?(?-i)['\"][0-9a-zA-Z\/+]{40}['\"]'''
+
+[[rules]]
+id = "azure-storage-account-key"
+description = "Azure Storage Account Key"
+regex = '''(?i)DefaultEndpointsProtocol=https;AccountName=[a-z0-9]+;AccountKey=[a-zA-Z0-9/+]+={0,3};EndpointSuffix=core.windows.net'''
+
+[[rules]]
+id = "github-token"
+description = "GitHub Token"
+regex = '''ghp_[0-9a-zA-Z]{36}'''
+
+[[rules]]
+id = "slack-token"
+description = "Slack Token"
+regex = '''xox[baprs]-[0-9]{12}-[0-9]{12}-[a-zA-Z0-9]{24}'''
+
+[[rules]]
+id = "google-api-key"
+description = "Google API Key"
+regex = '''AIza[0-9A-Za-z-_]{35}'''
+
+[[rules]]
+id = "heroku-api-key"
+description = "Heroku API Key"
+regex = '''(?i)heroku(.{0,20})?['\"][0-9a-f]{32}['\"]'''
+
+[[rules]]
+id = "stripe-api-key"
+description = "Stripe API Key"
+regex = '''(?i)(sk|pk)_live_[0-9a-zA-Z]{24}'''
+
+[[rules]]
+id = "sensitive-env-variable"
+description = "Sensitive Environment Variable"
+regex = '''(?i)(password|secret|api_key|apikey|access_token|auth_token)=(["']?[a-zA-Z0-9._-]+["']?)'''
+
+[[rules]]
+id = "generic-oauth-token"
+description = "Generic OAuth Token"
+regex = '''Bearer [a-zA-Z0-9\-_]{36,40}'''
+
+[[rules]]
+id = "private-key"
+description = "Private Key"
+regex = '''-----BEGIN (EC|DSA|PGP|OPENSSH|PRIVATE) KEY-----'''
+
+[allowlist]
+description = "Allowlisted patterns and paths"
+regexes = [
+    "# gitleaks:ignore", # Skip with comments mentioned gitleaks ignore
+    # Allow connection strings with fake passwords
+    '''(?i)(Server|Host|Database|User Id|Uid|Password|Pwd)=(.*fake.*|(\*){2,}|.*dummy.*);''',
+]
+
+files = [
+    "*.js", # js files
+    "*.md", # doc files
+]
+
+paths = [
+    "swagger-ui/",
+    "bin/",
+    "obj/",
+]
+
+[log]
+redact = false # Show the matched sensitive data in logs for debugging

@@ -1,0 +1,88 @@
+﻿<?xml version="1.0"?>
+<dalConfig>
+  <databaseSet databaseName="SkyDb" provider="sqlserver" connectionStringName="foundation.database.connectionstring.SkyDb">
+    <dataCommand name="Unittest:show:version:SkyDb" commandType="Text" commandTimeOut="5">
+      <commandText>
+        <![CDATA[
+SELECT SERVERPROPERTY ('productversion');
+        ]]>
+      </commandText>
+    </dataCommand>
+    <dataCommand name="Unittest:show:databases:SkyDb" commandType="Text" commandTimeOut="5">
+      <commandText>
+        <![CDATA[
+SELECT name
+FROM master.sys.databases
+WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb');
+        ]]>
+      </commandText>
+    </dataCommand>
+    <dataCommand name="Unittest:show:tables:SkyDb" commandType="Text" commandTimeOut="5">
+      <commandText>
+        <![CDATA[
+SELECT TABLE_NAME
+FROM SkyDb.INFORMATION_SCHEMA.TABLES
+WHERE TABLE_TYPE = 'BASE TABLE'
+        ]]>
+      </commandText>
+    </dataCommand>
+    <dataCommand name="Unittest:show:schema:by:table:SkyDb" commandType="Text" commandTimeOut="5">
+      <commandText>
+        <![CDATA[
+SELECT
+	col.name as [COLUMN_NAME],
+	CASE col.is_nullable
+	  WHEN 0 THEN 'NO'
+	  WHEN 1 THEN 'YES'
+	END as [IS_NULLABLE],
+	typ.name as [DATA_TYPE],
+	ext_p.value as [DESCRIPTION]
+FROM
+	sys.tables tb
+	  inner join sys.columns col
+      ON tb.[object_id] = col.[object_id]
+	  inner join sys.types typ
+	    ON col.system_type_id = typ.system_type_id
+        and col.user_type_id = typ.user_type_id
+	  left join sys.extended_properties ext_p
+	    ON ext_p.class = 1
+		    and tb.[object_id]=ext_p.major_id
+		    and col.column_id=ext_p.minor_id
+WHERE tb.name =  @TableName
+ORDER BY col.column_id
+;
+        ]]>
+      </commandText>
+    </dataCommand>
+    <dataCommand name="Unittest:exec:SP:SkyDb" commandType="Text" commandTimeOut="5">
+      <commandText>
+        <![CDATA[
+IF NOT EXISTS (
+    SELECT type_desc, type
+    FROM sys.procedures WITH(NOLOCK)
+    WHERE NAME = 'usp_Echo' AND type = 'P'
+)
+BEGIN
+
+EXEC dbo.sp_executesql @statement = N'
+CREATE PROCEDURE [dbo].[usp_Echo]
+	@Say varchar(50) = ''hi''
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT @Say as ''Say'', @@version as ''Version'';
+END'
+END
+;
+
+EXEC [dbo].[usp_Echo]
+  /*{D_say}*/
+;
+        ]]>
+      </commandText>
+      <parameters>
+        <add name="D_say" type="diy"> <![CDATA[ @Say=@_Say ]]></add>
+      </parameters>
+    </dataCommand>
+  </databaseSet>
+</dalConfig>

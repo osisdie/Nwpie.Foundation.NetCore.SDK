@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <PackageId>Nwpie.Foundation.ServiceNode.ServiceStack</PackageId>
+    <Authors>kevinwu</Authors>
+    <License>https://www.freebsd.org/copyright/freebsd-license.html</License>
+    <Description>The Core ServiceNode Attributes,Services,Extensions</Description>
+    <PackageTags>ServiceNode;ServiceStack</PackageTags>
+    <PackageReleaseNotes>Reference Abstractions</PackageReleaseNotes>
+    <PackageIconUrl>https://cdn.vsassets.io/content/icons/favicon.ico</PackageIconUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <RepositoryType>git</RepositoryType>
+    <VersionPrefix>1.0.0.0</VersionPrefix>
+    <!--VersionSuffix>preview-0723-2</VersionSuffix-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.0" />
+    <PackageReference Include="ServiceStack" Version="8.5.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Auth\SDK\Nwpie.Foundation.Auth.SDK.csproj" />
+    <ProjectReference Include="..\..\DataAccess\Mapper\Nwpie.Foundation.DataAccess.Mapper.csproj" />
+    <ProjectReference Include="..\SDK\Nwpie.Foundation.ServiceNode.SDK.csproj" />
+  </ItemGroup>
+
+</Project>

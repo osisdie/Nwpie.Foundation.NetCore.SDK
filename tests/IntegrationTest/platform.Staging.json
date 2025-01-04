@@ -1,0 +1,25 @@
+﻿{
+  "foundation": {
+    "version": "1.0.0.3",
+    "featureToggle": {
+      "stage.Staging.mapping": false
+    },
+    "startupJsonFileList": {
+      "appsettings.json": false,
+      "conf/appsettings.Staging.json": false
+    },
+    "loc": {
+      "serviceDiscoveryEnabled": false,
+      "serviceDiscoveryHostUrl": "http://35.161.197.46:8500"
+    },
+    "cache": {
+      "defaultProvider": "LocalCache", // RedisCache, LocalCache
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "localLoggingFile": ""
+    },
+    "apm": {
+      "influxDefaultDB": "foundation_temp"
+    }
+  }
+}

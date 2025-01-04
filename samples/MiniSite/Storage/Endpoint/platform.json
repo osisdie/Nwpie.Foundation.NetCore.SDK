@@ -1,0 +1,70 @@
+﻿{
+  "foundation": {
+    "remoteConfigKeys": [
+      "foundation.sdk.auth.default",
+      "foundation.aws.redis.connectionstring.db0",
+      "foundation.aws.sqs.urls.notification.default",
+      "foundation.aws.sqs.urls.measurement.default"
+    ],
+    "featureToggle": {
+      "debug.undefine.mapping": false
+    },
+    "startupJsonFileList": {
+      "appsettings.json": false,
+      "appconfig.json": false
+    },
+    "loc": {
+      "asConfigServerEnabled": false,
+      "serviceDiscoveryEnabled": false,
+      "listenLocationEventEnabled": false,
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "localLoggingFile": ""
+    },
+    "api": {
+      "bearToken": "",
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "localLoggingFile": ""
+    },
+    "dal": {
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "localLoggingFile": ""
+    },
+    "auth": {
+      "defaultProvider": "JwtTokenService",
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "collectUsageMetricEnabled": true,
+      "localLoggingFile": ""
+    },
+    "cache": {
+      "defaultProvider": "LocalCache", // RedisCache, LocalCache
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "collectUsageMetricEnabled": true,
+      "localLoggingFile": ""
+    },
+    "mq": {
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "localLoggingFile": ""
+    },
+    "apm": {
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "maxMessageCount": 1000,
+      "sendFrequency": 1000,
+      "influxDefaultDB": "foundation_temp",
+      "localLoggingFile": ""
+    },
+    "localCfg": {
+      "enabled": false,
+      "measurementEnabled": true,
+      "remoteLoggingEnabled": false,
+      "localLoggingFile": "",
+      "localConfigFilePath": "conf/localcfg.Development.json"
+    }
+  }
+}

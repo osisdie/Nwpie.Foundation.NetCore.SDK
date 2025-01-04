@@ -1,0 +1,29 @@
+﻿<?xml version="1.0"?>
+<dalConfig>
+  <databaseSet databaseName="ds1_db" provider="mysql" connectionStringName="foundation.aws.mysql.connectionstring.ds1_db">
+    <dataCommand name="Unittest:ds1:allItemVersion" commandType="Text" commandTimeOut="3">
+      <commandText>
+        <![CDATA[
+SELECT itm.item_guid
+  ,itm.ns_record_type
+  ,ver.version
+  ,ver.status
+  ,ver.is_deleted
+  ,ver.is_hidden
+  ,ver.ns_item_id
+  ,ver.ns_internal_id
+  ,ver.color
+  ,ver.modify_at
+  ,ver.create_at
+  ,ver.ns_data
+FROM ITEM itm
+  INNER JOIN ITEM_VERSION ver on itm.item_guid = ver.item_guid
+LIMIT @offset, @fetch
+;
+        ]]>
+      </commandText>
+      <parameters>
+      </parameters>
+    </dataCommand>
+  </databaseSet>
+</dalConfig>

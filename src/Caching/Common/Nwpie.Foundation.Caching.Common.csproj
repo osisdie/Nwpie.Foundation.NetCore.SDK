@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <PackageId>Nwpie.Foundation.Caching.Common</PackageId>
+    <Authors>kevinwu</Authors>
+    <License>https://www.freebsd.org/copyright/freebsd-license.html</License>
+    <Description>Common Cache Interfaces, Models</Description>
+    <PackageTags>Caching</PackageTags>
+    <PackageReleaseNotes>Reference Abstractions</PackageReleaseNotes>
+    <PackageIconUrl>https://cdn.vsassets.io/content/icons/favicon.ico</PackageIconUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <RepositoryType>git</RepositoryType>
+    <VersionPrefix>1.0.0.0</VersionPrefix>
+    <!--VersionSuffix>preview-0723-2</VersionSuffix-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Nwpie.Foundation.Common.csproj" />
+  </ItemGroup>
+
+</Project>

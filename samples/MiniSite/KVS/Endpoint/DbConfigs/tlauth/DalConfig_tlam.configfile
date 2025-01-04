@@ -1,0 +1,71 @@
+﻿<?xml version="1.0"?>
+<dalConfig>
+  <databaseSet databaseName="auth_db" provider="mysql" connectionStringName="foundation.aws.mysql.connectionstring.auth_db">
+    <dataCommand name="Kvs:Application:Get:All" commandType="Text">
+      <commandText>
+        <![CDATA[
+SELECT *
+FROM `APPLICATION`
+WHERE isdel = 0;
+        ]]>
+      </commandText>
+      <parameters>
+      </parameters>
+    </dataCommand>
+    <dataCommand name="Kvs:Permission:Get:All" commandType="Text">
+      <commandText>
+        <![CDATA[
+SELECT *
+FROM `PERMISSION`
+WHERE isdel = 0;
+        ]]>
+      </commandText>
+      <parameters>
+      </parameters>
+    </dataCommand>
+    <dataCommand name="Kvs:ApiKey:Get:All" commandType="Text">
+      <commandText>
+        <![CDATA[
+SELECT *
+FROM `API_KEY`
+WHERE isdel = 0;
+        ]]>
+      </commandText>
+      <parameters>
+      </parameters>
+    </dataCommand>
+    <dataCommand name="Kvs:ConfigKey:Get:All" commandType="Text">
+      <commandText>
+        <![CDATA[
+SELECT *
+FROM `CONFIG_KEY`
+WHERE isdel = 0;
+        ]]>
+      </commandText>
+      <parameters>
+      </parameters>
+    </dataCommand>
+    <dataCommand name="Kvs:ConfigValues:Get:All" commandType="Text">
+      <commandText>
+        <![CDATA[
+SELECT *
+FROM `CONFIG_VALUES`
+WHERE isdel = 0;
+        ]]>
+      </commandText>
+      <parameters>
+      </parameters>
+    </dataCommand>
+    <dataCommand name="Kvs:Permission:ApiKey:Get:All" commandType="Text">
+      <commandText>
+        <![CDATA[
+SELECT *
+FROM `PERMISSION_CONFIG_KEY`
+WHERE isdel = 0;
+        ]]>
+      </commandText>
+      <parameters>
+      </parameters>
+    </dataCommand>
+  </databaseSet>
+</dalConfig>

@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="conf\**" CopyToOutputDirectory="PreserveNewest" LinkBase="conf\" />
+    <None Include="DbConfigs\**" CopyToOutputDirectory="PreserveNewest" LinkBase="DbConfigs\" />
+    <None Include="App_Data\**" CopyToOutputDirectory="PreserveNewest" LinkBase="App_Data\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="app.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Component</SubType>
+    </Content>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Component</SubType>
+    </Content>
+    <Content Include="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="platform.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="platform.Development.json;platform.Staging.json;platform.Staging_2.json;platform.Production.json;">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DependentUpon>platform.json</DependentUpon>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.Core" Version="3.7.400.71" />
+    <PackageReference Include="AWS.Logger.Log4net" Version="3.5.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DataAccess\Database\Nwpie.Foundation.DataAccess.Database.csproj" />
+    <ProjectReference Include="..\..\src\Logging\ElasticSearch\Nwpie.Foundation.Logging.ElasticSearch.csproj" />
+    <ProjectReference Include="..\..\src\Measurement\SDK\Nwpie.Foundation.Measurement.SDK.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\launchSettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

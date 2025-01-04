@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Environments>
+  <!--===========================================Lab===========================================-->
+  <Environment Name="base">
+    <!--web-->
+    <Domain Name="app-dev.kevinw.net">
+      <Server IP="172.16.8.175">
+        <App Name="todo-web" Port="80" Uri="https://app-dev.kevinw.net/todo-web"/>
+        <App Name="asset-web" Port="80" Uri="https://app-dev.kevinw.net/asset-web"/>
+        <App Name="tlda-web" Port="80" Uri="https://app-dev.kevinw.net/tlda/photo-rename"/>
+      </Server>
+    </Domain>
+
+    <!--api-->
+    <Domain Name="api-dev.kevinw.net">
+      <Server IP="172.16.8.175">
+        <App Name="foundation" Port="80" Uri="https://api-dev.kevinw.net/foundation"/>
+        <App Name="acct" Port="80" Uri="https://api-dev.kevinw.net/acct"/>
+        <App Name="ds1" Port="80" Uri="https://api-dev.kevinw.net/ds1"/>
+        <App Name="todo" Port="80" Uri="https://api-dev.kevinw.net/todo"/>
+      </Server>
+    </Domain>
+  </Environment>
+
+  <!--===========================================Debug===========================================-->
+  <Environment Name="debug">
+    <!--web-->
+    <Domain Name="app-dev.kevinw.net">
+      <Server IP="172.16.8.175">
+        <App Name="todo-web" Port="80" Uri="https://app-dev.kevinw.net/todo-web"/>
+        <App Name="asset-web" Port="80" Uri="https://app-dev.kevinw.net/asset-web"/>
+        <App Name="tlda-web" Port="80" Uri="https://app-dev.kevinw.net/tlda/photo-rename"/>
+      </Server>
+    </Domain>
+
+    <!--api-->
+    <Domain Name="api-dev.kevinw.net">
+      <Server IP="172.16.8.175">
+        <App Name="foundation" Port="80" Uri="https://api-dev.kevinw.net/foundation"/>
+        <App Name="acct" Port="80" Uri="https://api-dev.kevinw.net/acct"/>
+        <App Name="ds1" Port="80" Uri="https://api-dev.kevinw.net/ds1"/>
+        <App Name="todo" Port="80" Uri="https://api-dev.kevinw.net/todo"/>
+      </Server>
+    </Domain>
+  </Environment>
+
+  <!--===========================================Dev===========================================-->
+  <Environment Name="dev">
+    <!--web-->
+    <Domain Name="app-dev.kevinw.net">
+      <Server IP="172.16.8.175">
+        <App Name="todo-web" Port="80" Uri="https://app-dev.kevinw.net/todo-web"/>
+        <App Name="asset-web" Port="80" Uri="https://app-dev.kevinw.net/asset-web"/>
+        <App Name="tlda-web" Port="80" Uri="https://app-dev.kevinw.net/tlda/photo-rename"/>
+      </Server>
+    </Domain>
+
+    <!--api-->
+    <Domain Name="api-dev.kevinw.net">
+      <Server IP="172.16.8.175">
+        <App Name="foundation" Port="80" Uri="https://api-dev.kevinw.net/foundation"/>
+        <App Name="acct" Port="80" Uri="https://api-dev.kevinw.net/acct"/>
+        <App Name="ds1" Port="80" Uri="https://api-dev.kevinw.net/ds1"/>
+        <App Name="todo" Port="80" Uri="https://api-dev.kevinw.net/todo"/>
+      </Server>
+    </Domain>
+  </Environment>
+
+  <!--===========================================Stage===========================================-->
+  <Environment Name="stage">
+    <!--web-->
+    <Domain Name="app-dev.kevinw.net">
+      <Server IP="172.16.8.175">
+        <App Name="todo-web" Port="80" Uri="https://app-dev.kevinw.net/todo-web"/>
+        <App Name="asset-web" Port="80" Uri="https://app-dev.kevinw.net/asset-web"/>
+        <App Name="tlda-web" Port="80" Uri="https://app-dev.kevinw.net/tlda/photo-rename"/>
+      </Server>
+    </Domain>
+
+    <!--api-->
+    <Domain Name="api-dev.kevinw.net">
+      <Server IP="172.16.8.175">
+        <App Name="foundation" Port="80" Uri="https://api-dev.kevinw.net/foundation"/>
+        <App Name="acct" Port="80" Uri="https://api-dev.kevinw.net/acct"/>
+        <App Name="ds1" Port="80" Uri="https://api-dev.kevinw.net/ds1"/>
+        <App Name="todo" Port="80" Uri="https://api-dev.kevinw.net/todo"/>
+      </Server>
+    </Domain>
+  </Environment>
+
+  <!--===========================================Preprod===========================================-->
+  <Environment Name="preprod">
+    <!--web-->
+    <Domain Name="app.kevinw.net">
+      <Server IP="172.16.8.175">
+        <App Name="todo-web" Port="80" Uri="https://app.kevinw.net/todo-web"/>
+        <App Name="asset-web" Port="80" Uri="https://app.kevinw.net/asset-web"/>
+        <App Name="tlda-web" Port="80" Uri="https://app.kevinw.net/tlda/photo-rename"/>
+      </Server>
+    </Domain>
+
+    <!--api-->
+    <Domain Name="api.kevinw.net">
+      <Server IP="172.16.8.175">
+        <App Name="foundation" Port="80" Uri="https://api.kevinw.net/foundation"/>
+        <App Name="acct" Port="80" Uri="https://api.kevinw.net/acct"/>
+        <App Name="ds1" Port="80" Uri="https://api.kevinw.net/ds1"/>
+        <App Name="todo" Port="80" Uri="https://api.kevinw.net/todo"/>
+      </Server>
+    </Domain>
+  </Environment>
+
+  <!--===========================================Prod===========================================-->
+  <Environment Name="prod">
+    <!--web-->
+    <Domain Name="app.kevinw.net">
+      <Server IP="172.16.8.175">
+        <App Name="todo-web" Port="80" Uri="https://app.kevinw.net/todo-web"/>
+        <App Name="asset-web" Port="80" Uri="https://app.kevinw.net/asset-web"/>
+        <App Name="tlda-web" Port="80" Uri="https://app.kevinw.net/tlda/photo-rename"/>
+      </Server>
+    </Domain>
+
+    <!--api-->
+    <Domain Name="api.kevinw.net">
+      <Server IP="172.16.8.175">
+        <App Name="foundation" Port="80" Uri="https://api.kevinw.net/foundation"/>
+        <App Name="acct" Port="80" Uri="https://api.kevinw.net/acct"/>
+        <App Name="ds1" Port="80" Uri="https://api.kevinw.net/ds1"/>
+        <App Name="todo" Port="80" Uri="https://api.kevinw.net/todo"/>
+      </Server>
+    </Domain>
+  </Environment>
+</Environments>

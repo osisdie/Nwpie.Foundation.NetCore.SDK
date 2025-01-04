@@ -1,0 +1,95 @@
+﻿<?xml version="1.0"?>
+<dalConfig>
+  <databaseSet databaseName="todo_db" provider="mysql" connectionStringName="foundation.aws.mysql.connectionstring.todo_db">
+    <dataCommand name="Unittest:echo:timeout" commandType="Text" commandTimeOut="3">
+      <commandText>
+        <![CDATA[
+SELECT SLEEP(5);
+SELECT VERSION() as `version`;
+        ]]>
+      </commandText>
+      <parameters>
+      </parameters>
+    </dataCommand>
+    <dataCommand name="Unittest:echo:null" commandType="Text">
+      <commandText>
+        <![CDATA[
+SELECT VERSION() as `version`
+FROM information_schema.tables
+where 1 != 1
+limit 1;
+        ]]>
+      </commandText>
+      <parameters>
+      </parameters>
+    </dataCommand>
+    <dataCommand name="Unittest:echo:version" commandType="Text">
+      <commandText>
+        <![CDATA[
+SELECT VERSION() as `version`;
+        ]]>
+      </commandText>
+      <parameters>
+      </parameters>
+    </dataCommand>
+    <dataCommand name="Unittest:testtable:findColumnChar" commandType="Text">
+      <commandText>
+        <![CDATA[
+SELECT *
+FROM TestTable
+WHERE columnChar = @columnChar;
+        ]]>
+      </commandText>
+    </dataCommand>
+    <dataCommand name="Unittest:testtable:insert" commandType="Text">
+      <commandText>
+        <![CDATA[
+INSERT INTO TestTable (columnChar, columnInt, columnDecimal, columnBool, columnDate, columnDatetime)
+SELECT @columnChar, @columnInt, @columnDecimal, @columnBool, @columnDate, @columnDatetime;
+
+SELECT *
+FROM TestTable
+WHERE ROW_COUNT() > 0
+  and id = LAST_INSERT_ID();
+        ]]>
+      </commandText>
+    </dataCommand>
+    <dataCommand name="Unittest:testsnaketable:insert" commandType="Text">
+      <commandText>
+        <![CDATA[
+INSERT INTO TestSnakeTable (column_char, column_int, column_decimal, column_bool, column_date, column_datetime)
+SELECT @columnChar, @columnInt, @columnDecimal, @columnBool, @columnDate, @columnDatetime;
+
+SELECT *
+FROM TestSnakeTable
+WHERE ROW_COUNT() > 0
+  and id = LAST_INSERT_ID();
+        ]]>
+      </commandText>
+    </dataCommand>
+   <dataCommand name="Unittest:query:todo_db:TestTable" commandType="Text" commandTimeOut="5">
+      <commandText>
+        <![CDATA[
+SELECT *
+FROM `TestTable`
+WHERE 1 = 1
+  /*{D_columnChar}*/
+  /*{D_columnInt}*/
+  /*{D_columnDecimal}*/
+  /*{D_columnBool}*/
+  /*{D_columnDate}*/
+  /*{D_columnDatetime}*/
+limit @offset, @limit;
+        ]]>
+      </commandText>
+     <parameters>
+       <add name="D_columnChar" type="diy"> <![CDATA[ AND columnChar like @columnChar ]]></add>
+       <add name="D_columnInt" type="diy"> <![CDATA[ AND columnInt = @columnInt ]]></add>
+       <add name="D_columnDecimal" type="diy"> <![CDATA[ AND columnDecimal = @columnDecimal ]]></add>
+       <add name="D_columnBool" type="diy"> <![CDATA[ AND columnBool = @columnBool ]]></add>
+       <add name="D_columnDate" type="diy"> <![CDATA[ AND columnDate = @columnDate ]]></add>
+       <add name="D_columnDatetime" type="diy"> <![CDATA[ AND columnDatetime = @columnDatetime ]]></add>
+     </parameters>
+    </dataCommand>
+  </databaseSet>
+</dalConfig>

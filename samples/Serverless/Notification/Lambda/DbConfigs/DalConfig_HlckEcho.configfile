@@ -1,0 +1,14 @@
+﻿<?xml version="1.0"?>
+<dalConfig>
+  <databaseSet databaseName="auth_db" provider="mysql" connectionStringName="foundation.aws.mysql.connectionstring.auth_db">
+    <dataCommand name="Hlck:Echo:Version" commandType="Text">
+      <commandText>
+        <![CDATA[
+SELECT VERSION();
+        ]]>
+      </commandText>
+      <parameters>
+      </parameters>
+    </dataCommand>
+  </databaseSet>
+</dalConfig>

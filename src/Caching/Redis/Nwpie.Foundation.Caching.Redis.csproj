@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <PackageId>Nwpie.Foundation.Caching.Redis</PackageId>
+    <Authors>kevinwu</Authors>
+    <License>https://www.freebsd.org/copyright/freebsd-license.html</License>
+    <Description>Cache Implementation for RedisCache</Description>
+    <PackageTags>Caching;Redis</PackageTags>
+    <PackageReleaseNotes>Reference Abstractions</PackageReleaseNotes>
+    <PackageIconUrl>https://cdn.vsassets.io/content/icons/favicon.ico</PackageIconUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <RepositoryType>git</RepositoryType>
+    <VersionPrefix>1.0.0.0</VersionPrefix>
+    <!--VersionSuffix>preview-0723-2</VersionSuffix-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StackExchange.Redis" Version="2.8.24" />
+    <PackageReference Include="StackExchange.Redis.Extensions.Newtonsoft" Version="10.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Nwpie.Foundation.Caching.Common.csproj" />
+  </ItemGroup>
+
+</Project>

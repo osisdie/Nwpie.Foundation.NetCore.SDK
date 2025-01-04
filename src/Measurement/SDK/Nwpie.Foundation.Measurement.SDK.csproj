@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <PackageId>Nwpie.Foundation.Measurement.SDK</PackageId>
+    <Authors>kevinwu</Authors>
+    <License>https://www.freebsd.org/copyright/freebsd-license.html</License>
+    <Description>Default Measurement Client Implementation,Extensions</Description>
+    <PackageTags>Measurement;InfluxDB;ClientSDK</PackageTags>
+    <PackageReleaseNotes>Reference Abstractions</PackageReleaseNotes>
+    <PackageIconUrl>https://cdn.vsassets.io/content/icons/favicon.ico</PackageIconUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <RepositoryType>git</RepositoryType>
+    <VersionPrefix>1.0.0.0</VersionPrefix>
+    <!--VersionSuffix>preview-0723-2</VersionSuffix-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="InfluxData.Net" Version="8.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Nwpie.Foundation.Common.csproj" />
+    <ProjectReference Include="..\..\Configuration\SDK\Nwpie.Foundation.Configuration.SDK.csproj" />
+    <ProjectReference Include="..\..\MessageQueue\SQS\Nwpie.Foundation.MessageQueue.SQS.csproj" />
+  </ItemGroup>
+
+</Project>

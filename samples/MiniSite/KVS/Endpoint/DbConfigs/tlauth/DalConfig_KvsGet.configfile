@@ -1,0 +1,20 @@
+﻿<?xml version="1.0"?>
+<dalConfig>
+  <databaseSet databaseName="auth_db" provider="mysql" connectionStringName="foundation.aws.mysql.connectionstring.auth_db">
+    <dataCommand name="Kvs:Get" commandType="Text">
+      <commandText>
+        <![CDATA[
+SELECT `rawdata`
+FROM `CONFIG_VALUE_VERSIONING`
+WHERE `configkey` = @configkey
+  and `app_id` = @app_id
+  and `apikey` = @apikey
+  and `version` = @version
+limit 1;
+        ]]>
+      </commandText>
+      <parameters>
+      </parameters>
+    </dataCommand>
+  </databaseSet>
+</dalConfig>
