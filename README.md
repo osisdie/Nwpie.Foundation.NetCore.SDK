@@ -1,13 +1,13 @@
 # Nwpie.Foundation.NetCore.SDK
 
-[![.NET](https://img.shields.io/badge/.NET-8.0-blue.svg)](https://dotnet.microsoft.com/download/dotnet/8.0)
+[![.NET](https://img.shields.io/badge/.NET-8%20%7C%2010-blue.svg)](https://dotnet.microsoft.com/download/dotnet)
 [![License](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg)](LICENSE)
 [![Build](https://github.com/osisdie/Nwpie.Foundation.NetCore.SDK/actions/workflows/dotnet.yml/badge.svg)](https://github.com/osisdie/Nwpie.Foundation.NetCore.SDK/actions/workflows/dotnet.yml)
 [![GitHub stars](https://img.shields.io/github/stars/osisdie/Nwpie.Foundation.NetCore.SDK)](https://github.com/osisdie/Nwpie.Foundation.NetCore.SDK/stargazers)
 [![GitHub issues](https://img.shields.io/github/issues/osisdie/Nwpie.Foundation.NetCore.SDK)](https://github.com/osisdie/Nwpie.Foundation.NetCore.SDK/issues)
 [![Last commit](https://img.shields.io/github/last-commit/osisdie/Nwpie.Foundation.NetCore.SDK)](https://github.com/osisdie/Nwpie.Foundation.NetCore.SDK/commits/main)
 
-**Nwpie.Foundation.NetCore.SDK** is a comprehensive, modular SDK built for .NET Core (.NET 8) developers. It simplifies and enhances application development by providing an all-in-one solution with well-defined abstractions, robust utilities, and modularized components. This SDK is tailored for modern .NET Core projects and is fully supported with unit tests.
+**Nwpie.Foundation.NetCore.SDK** is a comprehensive, modular SDK built for .NET developers. It simplifies and enhances application development by providing an all-in-one solution with well-defined abstractions, robust utilities, and modularized components. Core libraries target `netstandard2.1` for broad compatibility, while endpoint and test projects multi-target `net8.0` and `net10.0`. Fully supported with unit tests.
 
 ## Table of Contents
 - [Features](#features)
@@ -23,7 +23,7 @@
 ---
 
 ## Features
-- **.NET Core (.NET 8) Compatibility**: Designed for modern .NET Core applications.
+- **Multi-target .NET 8 & .NET 10**: Endpoint and test projects target both `net8.0` and `net10.0`. Core libraries use `netstandard2.1` for broad compatibility.
 - **Modular SDK**: Use what you need with a modularized structure.
 - **Comprehensive Tests**: Unit tests demonstrate usage and ensure reliability.
 - **Extensive Utilities**: Includes tools for logging, configuration, data access, and more.

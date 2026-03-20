@@ -1,3 +1,12 @@
+### 2026-03-20
+* **All Endpoint & Test projects**
+  * feat: Multi-target `net8.0` and `net10.0` (12 `.csproj` files)
+* **CI/CD**
+  * feat: Add strategy matrix for .NET 8 and .NET 10 in GitHub Actions workflow
+* **Repo**
+  * chore: Update repo description and add `net10`, `multi-target` topics
+  * chore: Update README badge and features for multi-target support
+
 ### 2025-01-03
 * **Nwpie.Foundation.***
   * pkge: Upgrade `Microsoft` packages to 9.0.0 *
