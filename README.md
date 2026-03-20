@@ -1,13 +1,18 @@
-﻿# Nwpie.Foundation.NetCore.SDK
+# Nwpie.Foundation.NetCore.SDK
 
 [![.NET](https://img.shields.io/badge/.NET-8.0-blue.svg)](https://dotnet.microsoft.com/download/dotnet/8.0)
 [![License](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg)](LICENSE)
+[![Build](https://github.com/osisdie/Nwpie.Foundation.NetCore.SDK/actions/workflows/dotnet.yml/badge.svg)](https://github.com/osisdie/Nwpie.Foundation.NetCore.SDK/actions/workflows/dotnet.yml)
+[![GitHub stars](https://img.shields.io/github/stars/osisdie/Nwpie.Foundation.NetCore.SDK)](https://github.com/osisdie/Nwpie.Foundation.NetCore.SDK/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/osisdie/Nwpie.Foundation.NetCore.SDK)](https://github.com/osisdie/Nwpie.Foundation.NetCore.SDK/issues)
+[![Last commit](https://img.shields.io/github/last-commit/osisdie/Nwpie.Foundation.NetCore.SDK)](https://github.com/osisdie/Nwpie.Foundation.NetCore.SDK/commits/main)
 
 **Nwpie.Foundation.NetCore.SDK** is a comprehensive, modular SDK built for .NET Core (.NET 8) developers. It simplifies and enhances application development by providing an all-in-one solution with well-defined abstractions, robust utilities, and modularized components. This SDK is tailored for modern .NET Core projects and is fully supported with unit tests.
 
 ## Table of Contents
 - [Features](#features)
 - [Modules Overview](#modules-overview)
+- [Quick Start](#quick-start)
 - [Getting Started](#getting-started)
   - [Clone the Repository](#clone-the-repository)
   - [Explore Modules](#explore-modules)
@@ -49,6 +54,49 @@ The SDK provides the following modules, located under the `src/` directory:
 
 ---
 
+## Quick Start
+
+### Caching
+
+Register local or Redis caching in your DI container:
+
+```csharp
+// In-memory cache
+services.AddLocalCache<ILocalCache>();
+services.AddAsDefaultICache<ILocalCache>();
+
+// Redis cache (requires Caching.Redis module)
+services.AddRedisCache<IRedisCache>();
+```
+
+### Serialization
+
+Register the default JSON serializer:
+
+```csharp
+services.AddDefaultSerializer<ISerializer>();
+```
+
+### Service Startup
+
+A typical service `Startup.cs` wires up serialization, caching, and module-specific services:
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddDefaultSerializer<ISerializer>();
+    services.AddLocalCache<ILocalCache>();
+    services.AddAsDefaultICache<ILocalCache>();
+
+    // Add module-specific services
+    services.AddConfigServer<IConfigServer>();
+}
+```
+
+See the [samples/](samples/) directory for complete working examples (MiniSite, Serverless).
+
+---
+
 ## Getting Started
 
 ### Clone the Repository
@@ -85,11 +133,7 @@ This will execute all unit tests and verify the SDK's functionality.
 ---
 
 ## Contributing
-We welcome contributions from the open-source community! To get involved:
-
-1. Fork the repository.
-2. Create a feature branch.
-3. Submit a pull request with detailed information about your changes.
+We welcome contributions from the open-source community! See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ---
 
@@ -99,14 +143,4 @@ This project is licensed under the BSD-3-Clause License. See the [LICENSE](LICEN
 ---
 
 ## Support
-If you encounter any issues or have suggestions, feel free to open an issue on GitHub. We'd love to hear your feedback!
-
----
-
-Feel free to adapt this template as needed for your project's specifics!
-
----
-
-Happy coding! 🚀
-
----
+If you encounter any issues or have suggestions, feel free to open an [issue](https://github.com/osisdie/Nwpie.Foundation.NetCore.SDK/issues) on GitHub.

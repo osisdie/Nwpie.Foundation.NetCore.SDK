@@ -277,3 +277,10 @@ __pycache__/
 # Custom
 **/aws-logger-errors.txt
 NuGet.Config
+
+# Environment and local settings
+.env
+.env.*
+!.env.example
+settings.local.json
+**/settings.local.json
