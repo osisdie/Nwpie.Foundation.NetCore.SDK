@@ -1,16 +1,20 @@
 # Nwpie.Foundation.NetCore.SDK
 
-[![.NET](https://img.shields.io/badge/.NET-8%20%7C%2010-blue.svg)](https://dotnet.microsoft.com/download/dotnet)
-[![License](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg)](LICENSE)
-[![Build](https://github.com/osisdie/Nwpie.Foundation.NetCore.SDK/actions/workflows/dotnet.yml/badge.svg)](https://github.com/osisdie/Nwpie.Foundation.NetCore.SDK/actions/workflows/dotnet.yml)
-[![GitHub stars](https://img.shields.io/github/stars/osisdie/Nwpie.Foundation.NetCore.SDK)](https://github.com/osisdie/Nwpie.Foundation.NetCore.SDK/stargazers)
-[![GitHub issues](https://img.shields.io/github/issues/osisdie/Nwpie.Foundation.NetCore.SDK)](https://github.com/osisdie/Nwpie.Foundation.NetCore.SDK/issues)
-[![Last commit](https://img.shields.io/github/last-commit/osisdie/Nwpie.Foundation.NetCore.SDK)](https://github.com/osisdie/Nwpie.Foundation.NetCore.SDK/commits/main)
+[![.NET](https://img.shields.io/badge/.NET-8%20%7C%2010%20%7C%2011--preview-blue.svg)](https://dotnet.microsoft.com/download/dotnet)
+[![NuGet](https://img.shields.io/nuget/v/Nwpie.Foundation.Abstractions.svg)](https://www.nuget.org/packages?q=Nwpie.Foundation)
+[![netstandard2.1](https://img.shields.io/badge/netstandard-2.1-blue.svg)](https://docs.microsoft.com/en-us/dotnet/standard/net-standard)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Build](https://github.com/osisdie/dotnet-nwpie-foundation-sdk/actions/workflows/dotnet.yml/badge.svg)](https://github.com/osisdie/dotnet-nwpie-foundation-sdk/actions/workflows/dotnet.yml)
+[![Modules](https://img.shields.io/badge/modules-16-green.svg)](#modules-overview)
+[![GitHub stars](https://img.shields.io/github/stars/osisdie/dotnet-nwpie-foundation-sdk)](https://github.com/osisdie/dotnet-nwpie-foundation-sdk/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/osisdie/dotnet-nwpie-foundation-sdk)](https://github.com/osisdie/dotnet-nwpie-foundation-sdk/issues)
+[![Last commit](https://img.shields.io/github/last-commit/osisdie/dotnet-nwpie-foundation-sdk)](https://github.com/osisdie/dotnet-nwpie-foundation-sdk/commits/main)
 
 **Nwpie.Foundation.NetCore.SDK** is a comprehensive, modular SDK built for .NET developers. It simplifies and enhances application development by providing an all-in-one solution with well-defined abstractions, robust utilities, and modularized components. Core libraries target `netstandard2.1` for broad compatibility, while endpoint and test projects multi-target `net8.0` and `net10.0`. Fully supported with unit tests.
 
 ## Table of Contents
 - [Features](#features)
+- [Installation](#installation)
 - [Modules Overview](#modules-overview)
 - [Quick Start](#quick-start)
 - [Getting Started](#getting-started)
@@ -23,10 +27,32 @@
 ---
 
 ## Features
-- **Multi-target .NET 8 & .NET 10**: Endpoint and test projects target both `net8.0` and `net10.0`. Core libraries use `netstandard2.1` for broad compatibility.
+- **Multi-target .NET 8, .NET 10 & .NET 11 (preview)**: Endpoint and test projects target `net8.0` and `net10.0`. CI also validates against .NET 11 preview. Core libraries use `netstandard2.1` for broad compatibility.
 - **Modular SDK**: Use what you need with a modularized structure.
+- **NuGet Ready**: Install individual modules via NuGet for easy integration.
 - **Comprehensive Tests**: Unit tests demonstrate usage and ensure reliability.
 - **Extensive Utilities**: Includes tools for logging, configuration, data access, and more.
+
+---
+
+## Installation
+
+Install individual modules via NuGet:
+
+```bash
+dotnet add package Nwpie.Foundation.Abstractions
+dotnet add package Nwpie.Foundation.Common
+dotnet add package Nwpie.Foundation.Caching.Common
+dotnet add package Nwpie.Foundation.Caching.Redis
+dotnet add package Nwpie.Foundation.Auth.SDK
+dotnet add package Nwpie.Foundation.Http.Common
+```
+
+Or search for all available packages:
+
+```bash
+dotnet nuget search Nwpie.Foundation
+```
 
 ---
 
@@ -103,8 +129,8 @@ See the [samples/](samples/) directory for complete working examples (MiniSite, 
 Clone the repository to explore the SDK:
 
 ```bash
-git clone https://github.com/osisdie/Nwpie.Foundation.NetCore.SDK.git
-cd Nwpie.Foundation.NetCore.SDK
+git clone https://github.com/osisdie/dotnet-nwpie-foundation-sdk.git
+cd dotnet-nwpie-foundation-sdk
 ```
 
 ### Explore Modules
@@ -117,7 +143,7 @@ Modules are located in the `src/` directory. For example:
 Each module is self-contained and can be used independently or as part of the complete SDK.
 
 ### Run Unit Tests
-Unit tests demonstrate how to use each module. Tests are located under `test/UnitTest`.
+Unit tests demonstrate how to use each module. Tests are located under `tests/UnitTest`.
 
 To run the tests:
 
@@ -138,9 +164,9 @@ We welcome contributions from the open-source community! See [CONTRIBUTING.md](C
 ---
 
 ## License
-This project is licensed under the BSD-3-Clause License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ---
 
 ## Support
-If you encounter any issues or have suggestions, feel free to open an [issue](https://github.com/osisdie/Nwpie.Foundation.NetCore.SDK/issues) on GitHub.
+If you encounter any issues or have suggestions, feel free to open an [issue](https://github.com/osisdie/dotnet-nwpie-foundation-sdk/issues) on GitHub.
