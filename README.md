@@ -10,6 +10,8 @@
 [![GitHub issues](https://img.shields.io/github/issues/osisdie/dotnet-nwpie-foundation-sdk)](https://github.com/osisdie/dotnet-nwpie-foundation-sdk/issues)
 [![Last commit](https://img.shields.io/github/last-commit/osisdie/dotnet-nwpie-foundation-sdk)](https://github.com/osisdie/dotnet-nwpie-foundation-sdk/commits/main)
 
+> **English** | [繁體中文](README.zh-TW.md)
+
 **Nwpie.Foundation.NetCore.SDK** is a comprehensive, modular SDK built for .NET developers. It simplifies and enhances application development by providing an all-in-one solution with well-defined abstractions, robust utilities, and modularized components. Core libraries target `netstandard2.1` for broad compatibility, while endpoint and test projects multi-target `net8.0` and `net10.0`. Fully supported with unit tests.
 
 ## Table of Contents

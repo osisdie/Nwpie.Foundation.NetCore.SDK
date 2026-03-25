@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <PackageId>Nwpie.Auth.Contract</PackageId>
+    <PackageId>Nwpie.Foundation.Auth.Contract</PackageId>
     <Description>Auth API Contracts</Description>
     <PackageTags>Auth;Contract</PackageTags>
     <PackageReleaseNotes>Reference Abstractions</PackageReleaseNotes>
