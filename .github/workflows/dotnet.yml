@@ -9,10 +9,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental || false }}
 
     strategy:
+      fail-fast: false
       matrix:
-        dotnet-version: ['8.0.x', '10.0.x']
+        dotnet-version: ['8.0.x', '10.0.x', '11.0.x']
+        include:
+          - dotnet-version: '11.0.x'
+            experimental: true
+            prerelease: true
 
     steps:
       - uses: actions/checkout@v4
@@ -21,6 +27,7 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
+          include-prerelease: ${{ matrix.prerelease || false }}
 
       - name: Restore dependencies
         run: dotnet restore

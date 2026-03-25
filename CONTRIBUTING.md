@@ -1,18 +1,18 @@
-# Contributing to Nwpie.Foundation.NetCore.SDK
+# Contributing to dotnet-nwpie-foundation-sdk
 
 Thank you for your interest in contributing! Here's how to get started.
 
 ## Development Setup
 
 ```bash
-git clone https://github.com/osisdie/Nwpie.Foundation.NetCore.SDK.git
-cd Nwpie.Foundation.NetCore.SDK
+git clone https://github.com/osisdie/dotnet-nwpie-foundation-sdk.git
+cd dotnet-nwpie-foundation-sdk
 dotnet restore
 dotnet build
 dotnet test
 ```
 
-**Prerequisites**: .NET 8 SDK
+**Prerequisites**: .NET 8 SDK (or later)
 
 ## How to Contribute
 
@@ -35,7 +35,7 @@ build/          # Build scripts and configurations
 ## Coding Guidelines
 
 - **Library projects** target `netstandard2.1` for broad compatibility
-- **Application projects** (endpoints, lambdas) target `net8.0`
+- **Application projects** (endpoints, lambdas) multi-target `net8.0` and `net10.0`
 - Follow existing naming conventions and code style
 - Add unit tests for new functionality
 - Keep modules self-contained and loosely coupled
@@ -47,4 +47,4 @@ build/          # Build scripts and configurations
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the [BSD-3-Clause License](LICENSE).
+By contributing, you agree that your contributions will be licensed under the [MIT License](LICENSE).

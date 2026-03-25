@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <Authors>kevinwu</Authors>
+    <Copyright>Copyright (c) 2019-2026 Kevin Wu</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://github.com/osisdie/dotnet-nwpie-foundation-sdk</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/osisdie/dotnet-nwpie-foundation-sdk</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+</Project>
